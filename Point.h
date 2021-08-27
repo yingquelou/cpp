@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+using std::abs;
 using std::sqrt;
 #include <iostream>
 using std::cerr;
@@ -123,7 +124,7 @@ Point Point::VectorComponent(const Point &P) const
         exit(EXIT_FAILURE);
     }
     double proportion = ((*this * P) / P_Mold) / P_Mold;
-    return proportion * P;
+    return P * proportion;
 }
 double Point::VectorMold() const
 {
@@ -131,7 +132,7 @@ double Point::VectorMold() const
 }
 bool Point::operator==(const Point &P) const
 {
-    if (x == P.x && y == P.y)
+    if (abs(x - P.x) < 1e-6 && abs(y - P.y) < 1e-6)
         return true;
     return false;
 }

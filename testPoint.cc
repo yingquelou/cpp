@@ -31,17 +31,42 @@ int main(void)
         ;
     if (Point(1, 0) == Point(1, 1)) //点/向量相异,条件为假
         ;
-    double G_x = G.Get_x();     //获取点G的横坐标:-6
-    double G_y = G.Get_y();     //获取点G的纵坐标:-4
+    double G_x = G.Get_x(); //获取点G的横坐标:-6
+    double G_y = G.Get_y(); //获取点G的纵坐标:-4
+
     double dot_product = A * B; //向量的数量积(内积、点积)
+
     /*  *从上面来看,Point既可以定义(创建)一个点，也可以定义(创建)一个向量
         *为了对以上两种情况有所区分,给Point起了一个别名VectorOfMath
         *于是用Point定义(创建)一个点,用VectorOfMath定义(创建)一个向量   */
-    VectorOfMath AB = B - A;        //AB是从点A到点B的向量
-    if (Point(1, 1) || Point(2, 2)) //向量平行(共线),条件为真
+
+    VectorOfMath AB = B - A; //AB是从点A到点B的向量
+
+    /*  共线定理
+        若b≠0，则a//b的充要条件是存在唯一实数λ,使a=λb.
+        若设a=(x1,y1),b=(x2,y2),则有与平行概念相同.
+        零向量平行于任何向量。
+    */
+    if (VectorOfMath(1, 1) || VectorOfMath(2, 2)) //向量平行(共线),条件为真
         ;
-    if (Point(1, 3) || Point(2, 2)) //向量不平行(不共线),条件为假
+    if (VectorOfMath(1, 3) || VectorOfMath(2, 2)) //向量不平行(不共线),条件为假
         ;
+
     double AB_Mold = AB.VectorMold(); //返回向量的模
+
+    /*  垂直定理
+        a⊥b的充要条件是a·b=0，即(x1x2+y1y2)=0.*/
+    VectorOfMath(3, 4) * VectorOfMath(-4, 3) == 0; //显然两向量垂直
+
+    /*  分解定理
+        平面向量分解定理：如果e1、e2是同一平面内的两个不平行向量,
+        那么对于这一平面内的任一向量，
+        有且只有一对实数使λ1、λ2,使向量a=λ1*e1+λ2*e2,
+        则我们把不平行向量e1、e2叫做这一平面内所有向量的基底 */
+    VectorOfMath tmp = VectorOfMath(2, 7).CoordinateInBase(VectorOfMath(1, 1), VectorOfMath(-2, 1));
+    //此处基底为(1, 1)、(-2, 1),向量a为(2, 7)
+    //满足a=λ1*e1+λ2*e2的是v1和v2
+    double v1 = tmp.Get_x(), v2 = tmp.Get_y();
+
     return 0;
 }
