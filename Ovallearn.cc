@@ -5,7 +5,7 @@ int main(void)
 {
     // Oval t;
     Point A(1, -1), B(1, 1);
-    VectorOfMath p(6, 2, A);
+    VectorOfMath p(A, 6.0, 2.0);
     cout << (B *= Point(2, 3)) << endl;
     // cout << "This point is " << Point(tan(M_PI / 3), 1).VectorMold() << endl;
     /* cout << "This point is " << Point(0, sqrt(2.0)).CoordinateInBase(Point(1 / sqrt(2.0), 1 / sqrt(2.0)), Point(-1 / sqrt(2.0), 1 / sqrt(2.0))) << endl;
