@@ -1,15 +1,13 @@
-#include <stdexcept>
-using std::runtime_error;
 #include <iostream>
 using std::cerr;
 using std::cin;
 using std::cout;
 using std::endl;
-#include <cstring>
 using std::string;
 #include <vector>
 using std::vector;
 static int Serch(const vector<string> &s, const string &t);
+//统计输入的一系列串中不同串的数量
 int main(void)
 {
     //定义串容器
@@ -18,11 +16,9 @@ int main(void)
     vector<unsigned> count;
     string t;
     int pos;
-    /* for (decltype(run.size()) i = 0; i < 10; i++)
-        run.push_back(i); */
     while (cin >> t)
     {
-        if (s.empty() || (pos = Serch(s, t)) < 0)
+        if ((pos = Serch(s, t)) < 0)
         {
             if (!t.empty())
             {
@@ -38,23 +34,21 @@ int main(void)
         else
             ++count[pos];
     }
-    for (size_t i = 0; i < s.size(); i++)
+    for (size_t i = 0; i < s.size(); ++i)
         cout << s[i] << " is " << count[i] << "." << endl;
     return 0;
 }
-//在串容器中查找某串，找到了返回相应位置(以下标形式),
-//参数不合法返回-1,找不到返回-2
+//在串容器中查找某串,找到了返回相应位置(以下标形式),
+//空容器或客串不用找,返回-1;找不到返回-2
 static int Serch(const vector<string> &s, const string &t)
 {
     if (s.empty() || t.empty())
-        return -1; //参数不合法返回-1
+        return -1; //空容器或客串不用找,返回-1
     int pos = 0;
     for (const auto &i : s)
         if (i != t)
             ++pos;
         else
-            break;
-    if (pos >= s.size()) //找不到返回-2
-        return -2;
-    return pos;
+            return pos;
+    return -2;//找不到,返回-2
 }
