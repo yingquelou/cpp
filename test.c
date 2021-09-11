@@ -10,9 +10,9 @@ void *fun(void *tmp)
 int main(void)
 {
     pthread_t th1, th2;
-    int a = 0, b = 1;
-    pthread_create(&th1, NULL, fun, &a);
+    _Atomic int a = 0, b = 1;
     pthread_create(&th2, NULL, fun, &b);
+    pthread_create(&th1, NULL, fun, &b);
     pthread_join(th1, NULL);
     pthread_join(th2, NULL);
     return 0;

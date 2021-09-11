@@ -1,4 +1,6 @@
 #pragma once
+//判断点/向量相同时所允许的误差
+#define allowableError (1e-18)
 #include <cmath>
 using std::abs;
 using std::sqrt;
@@ -25,7 +27,7 @@ public: //构造与析构
     Point();
     //拷贝构造
     Point(const Point &point);
-    //有参构造1
+    //有参构造:以形参顺序构造横、纵坐标
     Point(const double &, const double &);
     //有参构造2
     Point(const Point &, const double &, const double &);
@@ -59,7 +61,9 @@ public: //重载运算符
     Point &operator++(int);
     //判断点/向量相同
     bool operator==(const Point &P) const;
-    //非零向量间判断平行(共线)
+    //向量间判断平行(共线)
+    //当零向量参与平行的判断时,请谨慎使用!
+    //因为此时亦会返回true
     bool operator||(const Point &P) const;
 
 public: //成员函数
@@ -120,7 +124,7 @@ Point Point::VectorComponent(const Point &P) const
     if (!P_Mold)
     //此时P为零向量，参数非法
     {
-        cerr << "errer" << endl;
+        cerr << "errer:zero Vector" << endl;
         exit(EXIT_FAILURE);
     }
     double proportion = ((*this * P) / P_Mold) / P_Mold;
@@ -132,14 +136,13 @@ double Point::VectorMold() const
 }
 bool Point::operator==(const Point &P) const
 {
-    if (abs(x - P.x) < 1e-6 && abs(y - P.y) < 1e-6)
+    if (abs(x - P.x) < allowableError && abs(y - P.y) < allowableError)
         return true;
     return false;
 }
 bool Point::operator||(const Point &P) const
 {
-    if (((*this == Point(0, 0)) + (P == Point(0, 0)) == 0) &&
-        x * P.y == y * P.x)
+    if (x * P.y == y * P.x)
         return true;
     return false;
 }
