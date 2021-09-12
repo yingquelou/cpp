@@ -43,14 +43,14 @@ bool Line::KnowX(const double &x, Point &P) const
 {
     if (!B)
         return false;
-    P = Point(x, C / B - A);
+    P = Point(x, -(A * x + C) / B);
     return true;
 }
 bool Line::KnowY(const double &y, Point &P) const
 {
     if (!A)
         return false;
-    P = Point(-(B + C / A), y);
+    P = Point(-(B * y + C) / A, y);
     return true;
 }
 bool Line::CrossoverPoint(const Line &L, Point &P) const
@@ -70,6 +70,11 @@ bool Line::operator||(const Line &L) const
     if (DirectionVector() || L.DirectionVector())
         return true;
     return false;
+}
+double Line::AngleOfLine(const Line &L) const
+{
+    double tmp = DirectionVector().AngleOfVector(L.DirectionVector());
+    return (tmp > (M_PI / 2)) ? (M_PI - tmp) : tmp;
 }
 VectorOfMath Line::DirectionVector(void) const
 {

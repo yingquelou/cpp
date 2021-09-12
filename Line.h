@@ -56,4 +56,6 @@ public: //成员函数
     //当返回的是(0,0)时,表明该直线(相应this所指的类对象)此时不存在或无意义,
     //即它调用IsLineExist会返回False
     VectorOfMath NormalVector(void) const;
+    //返回两平面直线的夹角(指锐角夹角)
+    double AngleOfLine(const Line &L) const;
 };

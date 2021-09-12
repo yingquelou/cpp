@@ -8,6 +8,8 @@ using std::sqrt;
 using std::cerr;
 using std::endl;
 using std::ostream;
+#include <cmath>
+using std::acos;
 // using namespace std;
 // 平面向量/点类(坐标表示)
 class Point
@@ -73,6 +75,8 @@ public: //成员函数
     double Get_y() const { return y; };
     //向量的模
     double VectorMold() const;
+    //求解两向量的夹角
+    double AngleOfVector(const Point &P) const;
     //向量的合成与分解——分解
     //求当前向量在另一非零向量上的分量(投影)
     Point VectorComponent(const Point &P) const;
@@ -105,6 +109,11 @@ Point Point::operator*(const double &b) const
 Point operator*(const double &b, const Point &P)
 {
     return Point(b * P.x, b * P.y);
+}
+double Point::AngleOfVector(const Point &P) const
+{
+    double tmp = *this * P / (this->VectorMold() * P.VectorMold());
+    return acos(tmp);
 }
 Point Point::CoordinateInBase(const Point &ex, const Point &ey) const
 {

@@ -67,6 +67,5 @@ int main(void)
     //此处基底为(1, 1)、(-2, 1),向量a为(2, 7)
     //满足a=λ1*e1+λ2*e2的是v1和v2
     double v1 = tmp.Get_x(), v2 = tmp.Get_y();
-
     return 0;
 }
