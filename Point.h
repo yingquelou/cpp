@@ -1,6 +1,6 @@
 #pragma once
-//判断点/向量相同时所允许的误差
-#define allowableError (1e-18)
+//判断点/向量相同或平行时所允许的误差
+#define allowableError (1e-15)
 #include <cmath>
 using std::abs;
 using std::sqrt;
@@ -143,15 +143,24 @@ double Point::VectorMold() const
 {
     return sqrt(x * x + y * y);
 }
+// #undef allowableError
 bool Point::operator==(const Point &P) const
 {
+#ifdef allowableError
     if (abs(x - P.x) < allowableError && abs(y - P.y) < allowableError)
+#else
+    if (x == P.x && y == P.y)
+#endif
         return true;
     return false;
 }
 bool Point::operator||(const Point &P) const
 {
+#ifdef allowableError
+    if (x * P.y - y * P.x < allowableError)
+#else
     if (x * P.y == y * P.x)
+#endif
         return true;
     return false;
 }
@@ -189,7 +198,7 @@ double Point::operator*(const Point &P) const
 }
 ostream &operator<<(ostream &cout, const Point &P)
 {
-    cout << "(" << P.x << "," << P.y << ")";
+    cout << '(' << P.x << ',' << P.y << ')';
     return cout;
 }
 Point &Point::operator=(const Point &b)
