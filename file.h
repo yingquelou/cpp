@@ -8,21 +8,21 @@ static struct
     double (*Mul)(const double, const double);
 
 } Test;
-double mul(const double x, const double y)
+static double mul(const double x, const double y)
 {
     return x * y;
 }
-double sum(const double x, const double y)
+static double sum(const double x, const double y)
 {
     return x + y;
 }
-double div(const double x, const double y)
+static double div(const double x, const double y)
 {
     if (!y)
         fprintf(stderr, "y can't be zero!\n");
     return x / y;
 }
-double sub(const double x, const double y)
+static double sub(const double x, const double y)
 {
     return x - y;
 }
