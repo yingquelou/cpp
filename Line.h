@@ -1,5 +1,6 @@
 #pragma once
 #include "Point.h"
+#include "Point.cpp"
 #include <cstdbool>
 using namespace std;
 //平面直线类
@@ -9,6 +10,7 @@ class Line
     friend ostream &operator<<(ostream &cout, const Line &L);
 
 private:
+    //平面直线一般式：Ax+By+C=0(a与b不能都为零)
     double A;
     double B;
     double C;

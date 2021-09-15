@@ -1,9 +1,9 @@
-#include "Oval.h"
+#include "Ellipse.h"
 #include <iostream>
 using std::cout;
 int main(void)
 {
-    // Oval t;
+    // Ellipse t;
     Point A(1, -1), B(1, 1);
     VectorOfMath p(A, 6.0, 2.0);
     cout << (B *= Point(2, 3)) << endl;
