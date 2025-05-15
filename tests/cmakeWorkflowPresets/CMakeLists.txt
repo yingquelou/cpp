@@ -1,0 +1,8 @@
+﻿cmake_path(GET CMAKE_CURRENT_LIST_DIR FILENAME PROJ)
+file(GLOB SRCLIST *.cpp;*.cxx;*.c)
+find_library(jansson jansson REQUIRED)
+find_file(jansson_header jansson.h)
+if(jansson)
+    add_executable(${PROJ} ${SRCLIST})
+    target_link_libraries(${PROJ} jansson)
+endif()

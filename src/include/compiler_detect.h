@@ -1,0 +1,137 @@
+#ifndef COMPILER_DETECT_H
+#define COMPILER_DETECT_H
+
+// 编译器类型宏定义
+#define COMPILER_UNKNOWN 0
+#define COMPILER_CLANG 1
+#define COMPILER_GCC 2
+#define COMPILER_MSVC 3
+#define COMPILER_INTEL 4
+#define COMPILER_MINGW 5
+#define COMPILER_BORLAND 6
+#define COMPILER_CODEGEAR 7
+#define COMPILER_DMC 8
+#define COMPILER_TINYC 9
+#define COMPILER_WATCOM 10
+
+// 编译器版本号宏（主版本和次版本）
+// #define COMPILER_VERSION_MAJOR 0
+// #define COMPILER_VERSION_MINOR 0
+
+// 编译器检测
+#if defined(__clang__)
+#define COMPILER COMPILER_CLANG
+#define COMPILER_VERSION_MAJOR __clang_major__
+#define COMPILER_VERSION_MINOR __clang_minor__
+#elif defined(__INTEL_COMPILER)
+#define COMPILER COMPILER_INTEL
+#define COMPILER_VERSION_MAJOR (__INTEL_COMPILER / 100)
+#define COMPILER_VERSION_MINOR (__INTEL_COMPILER % 100)
+#elif defined(__MINGW64__) || defined(__MINGW32__)
+#define COMPILER COMPILER_MINGW
+#if defined(__GNUC__)
+#define COMPILER_VERSION_MAJOR __GNUC__
+#define COMPILER_VERSION_MINOR __GNUC_MINOR__
+#else
+#define COMPILER_VERSION_MAJOR 0
+#define COMPILER_VERSION_MINOR 0
+#endif
+#elif defined(__GNUC__)
+#define COMPILER COMPILER_GCC
+#define COMPILER_VERSION_MAJOR __GNUC__
+#define COMPILER_VERSION_MINOR __GNUC_MINOR__
+#elif defined(_MSC_VER)
+#define COMPILER COMPILER_MSVC
+#define COMPILER_VERSION_MAJOR (_MSC_VER / 100)
+#define COMPILER_VERSION_MINOR (_MSC_VER % 100)
+#elif defined(__BORLANDC__)
+#define COMPILER COMPILER_BORLAND
+#define COMPILER_VERSION_MAJOR (__BORLANDC__ / 0x100)
+#define COMPILER_VERSION_MINOR (__BORLANDC__ % 0x100)
+#elif defined(__CODEGEARC__)
+#define COMPILER COMPILER_CODEGEAR
+#define COMPILER_VERSION_MAJOR (__CODEGEARC__ / 100)
+#define COMPILER_VERSION_MINOR (__CODEGEARC__ % 100)
+#elif defined(__DMC__)
+#define COMPILER COMPILER_DMC
+#define COMPILER_VERSION_MAJOR (__DMC__ / 0x100)
+#define COMPILER_VERSION_MINOR (__DMC__ % 0x100)
+#elif defined(__TINYC__)
+#define COMPILER COMPILER_TINYC
+#define COMPILER_VERSION_MAJOR __TINYC__
+#define COMPILER_VERSION_MINOR 0
+#elif defined(__WATCOMC__)
+#define COMPILER COMPILER_WATCOM
+#define COMPILER_VERSION_MAJOR (__WATCOMC__ / 100)
+#define COMPILER_VERSION_MINOR (__WATCOMC__ % 100)
+#else
+#define COMPILER COMPILER_UNKNOWN
+#define COMPILER_VERSION_MAJOR 0
+#define COMPILER_VERSION_MINOR 0
+#endif
+
+// 编译器名称字符串
+#if COMPILER == COMPILER_CLANG
+#define COMPILER_NAME "Clang"
+#elif COMPILER == COMPILER_INTEL
+#define COMPILER_NAME "Intel ICC"
+#elif COMPILER == COMPILER_MINGW
+#define COMPILER_NAME "MinGW GCC"
+#elif COMPILER == COMPILER_GCC
+#define COMPILER_NAME "GCC"
+#elif COMPILER == COMPILER_MSVC
+#define COMPILER_NAME "MSVC"
+#elif COMPILER == COMPILER_BORLAND
+#define COMPILER_NAME "Borland C++"
+#elif COMPILER == COMPILER_CODEGEAR
+#define COMPILER_NAME "Embarcadero C++"
+#elif COMPILER == COMPILER_DMC
+#define COMPILER_NAME "Digital Mars"
+#elif COMPILER == COMPILER_TINYC
+#define COMPILER_NAME "Tiny C Compiler"
+#elif COMPILER == COMPILER_WATCOM
+#define COMPILER_NAME "Watcom C"
+#else
+#define COMPILER_NAME "Unknown Compiler"
+#endif
+
+#ifdef __cplusplus
+// C++ 标准版本检测
+// __cplusplus 宏值示例：
+// C++98: 199711L
+#define STD_CXX98 199711L
+// C++11: 201103L
+#define STD_CXX11 201103L
+// C++14: 201402L
+#define STD_CXX14 201402L
+// C++17: 201703L
+#define STD_CXX17 201703L
+// C++20: 202002L
+#define STD_CXX20 202002L
+// C++23: 202300L (部分编译器支持)
+#define STD_CXX23 202300L
+
+// 针对 MSVC 的 C++ 标准支持宏（MSVC 不完全遵守 __cplusplus，需手动开启 /Zc:__cplusplus）
+#ifdef _MSC_VER
+#define CPP_STANDARD _MSVC_LANG
+#else
+#define CPP_STANDARD __cplusplus
+#endif
+
+#else
+
+// C 标准版本检测
+// __STDC_VERSION__ 宏值示例：
+// C89: 未定义或 199409L
+#define STD_C89 199409L
+// C99: 199901L
+#define STD_C99 199901L
+// C11: 201112L
+#define STD_C11 201112L
+// C17: 201710L
+#define STD_C17 201710L
+
+#define C_STANDARD __STDC_VERSION__
+#endif
+
+#endif // COMPILER_DETECT_H

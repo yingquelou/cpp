@@ -1,0 +1,181 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 19,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "BASE",
+            "description": "Root of the configure preset inheritance tree of cmake",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
+            }
+        },
+        {
+            "name": "GCC",
+            "hidden": true,
+            "inherits": "BASE",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
+            "name": "GCC_MINGW",
+            "hidden": true,
+            "generator": "MinGW Makefiles",
+            "inherits": "GCC"
+        },
+        {
+            "name": "GCC_MINGW_DEBUG",
+            "displayName": "GCC x86_64-w64-mingw32 (mingw64) Debug",
+            "description": "使用编译器: C = gcc, CXX = g++",
+            "inherits": "GCC_MINGW",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "GCC_MINGW_RELEASE",
+            "displayName": "GCC x86_64-w64-mingw32 (mingw64) Release",
+            "description": "使用编译器: C = gcc, CXX = g++",
+            "inherits": "GCC_MINGW",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "GCC_UNIX",
+            "hidden": true,
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            },
+            "generator": "Unix Makefiles",
+            "inherits": "GCC"
+        },
+        {
+            "name": "GCC_UNIX_DEBUG",
+            "description": "使用编译器: C = gcc, CXX = g++",
+            "inherits": "GCC_UNIX",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "GCC_UNIX_RELEASE",
+            "description": "使用编译器: C = gcc, CXX = g++",
+            "inherits": "GCC_UNIX",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "MSVC",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "generator": "Visual Studio 17 2022",
+            "hidden": true,
+            "inherits": "BASE"
+        },
+        {
+            "name": "MSVC_X86",
+            "description": "将编译器用于 Visual Studio 17 2022 (x86 体系结构)",
+            "toolset": "host=x86",
+            "architecture": "win32",
+            "inherits": "MSVC"
+        },
+        {
+            "name": "MSVC_X64",
+            "inherits": "MSVC",
+            "description": "将编译器用于 Visual Studio 17 2022 (x64 体系结构)",
+            "toolset": "host=x64",
+            "architecture": "x64"
+        },
+        {
+            "name": "MSVC_X86_X64",
+            "description": "将编译器用于 Visual Studio 17 2022 (x86_x64 体系结构)",
+            "toolset": "host=x86",
+            "architecture": "x64",
+            "inherits": "MSVC"
+        },
+        {
+            "name": "MSVC_X64_X86",
+            "description": "将编译器用于 Visual Studio 17 2022 (x64_x86 体系结构)",
+            "toolset": "host=x64",
+            "architecture": "win32",
+            "inherits": "MSVC"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "MSVC_X86_DEBUG",
+            "configurePreset": "MSVC_X86",
+            "configuration": "Debug"
+        },
+        {
+            "name": "MSVC_X86_RELEASE",
+            "configurePreset": "MSVC_X86",
+            "configuration": "Release"
+        },
+        {
+            "name": "MSVC_X64_DEBUG",
+            "configurePreset": "MSVC_X64",
+            "configuration": "Debug"
+        },
+        {
+            "name": "MSVC_X64_RELEASE",
+            "configurePreset": "MSVC_X64",
+            "configuration": "Release"
+        },
+        {
+            "name": "MSVC_X86_X64_DEBUG",
+            "configurePreset": "MSVC_X86_X64",
+            "configuration": "Debug"
+        },
+        {
+            "name": "MSVC_X86_X64_RELEASE",
+            "configurePreset": "MSVC_X86_X64",
+            "configuration": "Release"
+        },
+        {
+            "name": "MSVC_X64_X86_DEBUG",
+            "configurePreset": "MSVC_X64_X86",
+            "configuration": "Debug"
+        },
+        {
+            "name": "MSVC_X64_X86_RELEASE",
+            "configurePreset": "MSVC_X64_X86",
+            "configuration": "Release"
+        },
+        {
+            "name": "GCC_MINGW_DEBUG",
+            "description": "",
+            "displayName": "",
+            "configurePreset": "GCC_MINGW_DEBUG"
+        }
+    ],
+    "workflowPresets": [
+        {
+            "name": "MSVC_X64_RELEASE",
+            "steps": [
+                {
+                    "name": "MSVC_X64",
+                    "type": "configure"
+                },
+                {
+                    "name": "MSVC_X64_RELEASE",
+                    "type": "build"
+                }
+            ]
+        }
+    ]
+}
