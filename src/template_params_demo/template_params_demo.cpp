@@ -2,22 +2,22 @@
 //
 
 #include <iostream>
-#include "template_params.hpp"
+#include "types.hpp"
 int main()
 {
-	using type = typename tuple_init<int,
-									 const char, int,
-									 const char, int,
-									 const char, int,
-									 char, short>::type;
+	using type = types::tuple_u_t<std::tuple<>, std::tuple<int,
+														   const char, int,
+														   const char, int,
+														   const char, int,
+														   char, short>>;
 	type t;
 	std::cout << typeid(type).name() << '\n';
-	using type2 = typename tuple_n<
+	using type2 = types::tuple_n_t<
 		std::tuple<long, unsigned, int, char, double>,
-		std::tuple<int, char, float, long, double>>::type;
+		std::tuple<int, char, float, long, double>>;
 	std::cout << typeid(type2).name() << '\n';
-	using type3 = typename tuple_x<
+	using type3 = types::tuple_x_t<
 		std::tuple<long, unsigned, int, char, double>,
-		std::tuple<int, char, float, long, double>>::type;
+		std::tuple<int, char, float, long, double>>;
 	std::cout << typeid(type3).name() << '\n';
 }

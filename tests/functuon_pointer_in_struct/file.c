@@ -1,4 +1,3 @@
-//C实现伪命名空间
 #include "file.h"
 int main(void)
 {

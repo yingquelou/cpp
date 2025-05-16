@@ -1,0 +1,6 @@
+cmake_path(GET CMAKE_CURRENT_LIST_DIR STEM PROJ)
+set(Python_USE_STATIC_LIBS TRUE)
+find_package(Python REQUIRED COMPONENTS Interpreter Development)
+include_directories(${Python_INCLUDE_DIRS})
+add_executable(${PROJ} main.cpp)
+target_link_libraries(${PROJ} Python::Python)
