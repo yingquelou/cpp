@@ -1,0 +1,9 @@
+#pragma once
+#ifndef SPAM_H
+#define SPAM_H 1
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
+#define __MODULE_NAME__ "@PROJ@"
+#define PyInit_MODULE PyInit_@PROJ@
+PyMODINIT_FUNC PyInit_MODULE();
+#endif

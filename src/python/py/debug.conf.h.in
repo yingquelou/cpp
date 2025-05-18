@@ -1,0 +1,8 @@
+#ifndef DEBUG_CONF_H
+#define DEBUG_CONF_H 1
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
+#define __MODULE_NAME__ "@MODULE_NAME@"
+#define PyInit_MODULE PyInit__@MODULE_NAME@
+PyMODINIT_FUNC PyInit_MODULE();
+#endif

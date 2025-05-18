@@ -1,0 +1,7 @@
+cmake_path(GET CMAKE_CURRENT_LIST_DIR STEM PROJ)
+# file(GLOB PROJ_SOURCES RELATIVE ${CMAKE_CURRENT_LIST_DIR} *.c;*.C;*.c++;*.cc;*.cpp;*.cxx;*.cu;*.mpp;*.m;*.M;*.mm;*.ixx;*.cppm;*.ccm;*.cxxm;*.c++m;*.h;*.hh;*.h++;*.hm;*.hpp;*.hxx;*.in;*.txx;*.f;*.F;*.for;*.f77;*.f90;*.f95;*.f03;*.hip;*.ispc)
+find_package(Python REQUIRED COMPONENTS Development Interpreter)
+configure_file(spam.h.in spam.h)
+include_directories(${Python_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+add_library(${PROJ} spam.cpp)
+target_link_libraries(${PROJ} ${Python_LIBRARIES})

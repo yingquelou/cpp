@@ -1,11 +1,110 @@
 #pragma once
-#include <tuple>
+#ifndef TYPES_HPP
+#define TYPES_HPP 1
+#include <type_traits>
+#include "compiler_detect.h"
+namespace types
+{
+	// 类型集合,作为结果类型被使用
+	template <typename...>
+	struct types
+	{
+	};
+	namespace __detail
+	{
+		template <typename, typename _B1, typename... _Bn>
+		struct __disjunction_impl
+		{
+			using type = _B1;
+		};
+
+		template <typename _B1, typename _B2, typename... _Bn>
+		struct __disjunction_impl<typename std::enable_if<!bool(_B1::value)>::type, _B1, _B2, _Bn...>
+		{
+			using type = typename __disjunction_impl<void, _B2, _Bn...>::type;
+		};
+		template <typename, typename _B1, typename... _Bn>
+
+		struct __conjunction_impl
+		{
+			using type = _B1;
+		};
+
+		template <typename _B1, typename _B2, typename... _Bn>
+		struct __conjunction_impl<typename std::enable_if<bool(_B1::value)>::type, _B1, _B2, _Bn...>
+		{
+			using type = typename __conjunction_impl<void, _B2, _Bn...>::type;
+		};
+
+		template <template <typename> typename, typename...>
+		struct __filter_impl;
+		// predicate
+		template <template <typename> typename Predicate,
+				  typename T,
+				  typename... Ts1,
+				  typename... Ts2>
+		struct __filter_impl<Predicate, types<Ts1...>, types<T, Ts2...>>
+		{
+			using type = typename std::conditional<bool(Predicate<T>::value),
+												   typename __filter_impl<Predicate, types<Ts1..., T>, types<Ts2...>>::type,
+												   typename __filter_impl<Predicate, types<Ts1...>, types<Ts2...>>::type>::type;
+		};
+		template <template <typename> typename Predicate,
+				  typename... Ts>
+		struct __filter_impl<Predicate, types<Ts...>, types<>>
+		{
+			using type = types<Ts...>;
+		};
+	}
+
+	template <typename... _Bn>
+	struct disjunction : __detail::__disjunction_impl<void, _Bn...>::type
+	{
+	};
+
+	template <>
+	struct disjunction<> : std::false_type
+	{
+	};
+
+	template <typename... _Bn>
+	struct conjunction : __detail::__conjunction_impl<void, _Bn...>::type
+	{
+	};
+
+	template <>
+	struct conjunction<> : std::false_type
+	{
+	};
+
+	template <template <typename> typename, typename...>
+	struct filter;
+	template <
+		template <typename> typename Predicate,
+		template <typename...> typename Container,
+		typename... Ts>
+	struct filter<Predicate, Container<Ts...>>
+	{
+		using type = typename __detail::__filter_impl<Predicate, types<>, Container<Ts...>>::type;
+	};
+
+	template <
+		template <typename> typename Predicate,
+		typename Container>
+	using filter_t = typename filter<Predicate, Container>::type;
+#if CPP_STANDARD >= STD_CXX14
+	template <typename... _Bn>
+	inline constexpr bool disjunction_v = disjunction<_Bn...>::value;
+	template <typename... _Bn>
+	inline constexpr bool conjunction_v = conjunction<_Bn...>::value;
+#endif
+}
 namespace types
 {
 	namespace __detail
 	{
 		template <typename...>
-		struct __tuple_n_helper;
+		struct __types_n_helper;
 		template <
 			template <typename...> typename Tv1,
 			template <typename...> typename Tv2,
@@ -14,9 +113,9 @@ namespace types
 			typename... Ts2,
 			typename... Ts3,
 			typename T>
-		struct __tuple_n_helper<Tv1<Ts1...>, Tv2<Ts2...>, Tv3<T, Ts3...>>
+		struct __types_n_helper<Tv1<Ts1...>, Tv2<Ts2...>, Tv3<T, Ts3...>>
 		{
-			using type = std::conditional_t<std::disjunction_v<std::is_same<T, Ts2>...>, typename __tuple_n_helper<Tv1<Ts1..., T>, Tv2<Ts2...>, Tv3<Ts3...>>::type, typename __tuple_n_helper<Tv1<Ts1...>, Tv2<Ts2...>, Tv3<Ts3...>>::type>;
+			using type = typename std::conditional<bool(disjunction<std::is_same<T, Ts2>...>::value), typename __types_n_helper<Tv1<Ts1..., T>, Tv2<Ts2...>, Tv3<Ts3...>>::type, typename __types_n_helper<Tv1<Ts1...>, Tv2<Ts2...>, Tv3<Ts3...>>::type>::type;
 		};
 		template <
 			template <typename...> typename Tv1,
@@ -24,13 +123,13 @@ namespace types
 			template <typename...> typename Tv3,
 			typename... Ts1,
 			typename... Ts2>
-		struct __tuple_n_helper<Tv1<Ts1...>, Tv2<Ts2...>, Tv3<>>
+		struct __types_n_helper<Tv1<Ts1...>, Tv2<Ts2...>, Tv3<>>
 		{
 			using type = Tv1<Ts1...>;
 		};
 
 		template <typename...>
-		struct __tuple_x_helper;
+		struct __types_x_helper;
 		template <
 			template <typename...> typename Tv1,
 			template <typename...> typename Tv2,
@@ -39,9 +138,9 @@ namespace types
 			typename... Ts2,
 			typename... Ts3,
 			typename T>
-		struct __tuple_x_helper<Tv1<Ts1...>, Tv2<T, Ts2...>, Tv3<Ts3...>>
+		struct __types_x_helper<Tv1<Ts1...>, Tv2<T, Ts2...>, Tv3<Ts3...>>
 		{
-			using type = std::conditional_t<std::disjunction_v<std::is_same<T, Ts3>...>, typename __tuple_x_helper<Tv1<Ts1...>, Tv2<Ts2...>, Tv3<Ts3...>>::type, typename __tuple_x_helper<Tv1<Ts1..., T>, Tv2<Ts2...>, Tv3<Ts3...>>::type>;
+			using type = typename std::conditional<bool(disjunction<std::is_same<T, Ts3>...>::value), typename __types_x_helper<Tv1<Ts1...>, Tv2<Ts2...>, Tv3<Ts3...>>::type, typename __types_x_helper<Tv1<Ts1..., T>, Tv2<Ts2...>, Tv3<Ts3...>>::type>::type;
 		};
 		template <
 			template <typename...> typename Tv1,
@@ -49,13 +148,13 @@ namespace types
 			template <typename...> typename Tv3,
 			typename... Ts1,
 			typename... Ts3>
-		struct __tuple_x_helper<Tv1<Ts1...>, Tv2<>, Tv3<Ts3...>>
+		struct __types_x_helper<Tv1<Ts1...>, Tv2<>, Tv3<Ts3...>>
 		{
 			using type = Tv1<Ts1...>;
 		};
 
 		template <typename...>
-		struct _tuple_u_helper;
+		struct __types_u_helper;
 
 		template <
 			template <typename...> class Tv1,
@@ -63,64 +162,69 @@ namespace types
 			typename... Ts1,
 			typename... Ts2,
 			typename T>
-		struct _tuple_u_helper<Tv1<Ts1...>, Tv2<T, Ts2...>>
+		struct __types_u_helper<Tv1<Ts1...>, Tv2<T, Ts2...>>
 		{
-			using type = std::conditional_t<std::disjunction_v<std::is_same<T, Ts1>...>, typename _tuple_u_helper<Tv1<Ts1...>, Tv2<Ts2...>>::type, typename _tuple_u_helper<Tv1<Ts1..., T>, Tv2<Ts2...>>::type>;
+			using type = typename std::conditional<bool(disjunction<std::is_same<T, Ts1>...>::value), typename __types_u_helper<Tv1<Ts1...>, Tv2<Ts2...>>::type, typename __types_u_helper<Tv1<Ts1..., T>, Tv2<Ts2...>>::type>::type;
 		};
 		template <
 			template <typename...> class Tv1,
 			template <typename...> class Tv2,
 			typename... Ts>
-		struct _tuple_u_helper<Tv1<Ts...>, Tv2<>>
+		struct __types_u_helper<Tv1<Ts...>, Tv2<>>
 		{
 			using type = Tv1<Ts...>;
 		};
 
 	} // namespace __detail
+
 	// 交集
 	template <typename...>
-	struct tuple_n;
+	struct types_n;
 	template <
 		template <typename...> typename Tv1,
 		template <typename...> typename Tv3,
 		typename... Ts1,
 		typename... Ts3,
 		typename T>
-	struct tuple_n<Tv1<Ts1...>, T, Tv3<Ts3...>>
+	struct types_n<Tv1<Ts1...>, T, Tv3<Ts3...>>
 	{
-		using type = typename __detail::__tuple_n_helper<std::tuple<Ts1...>, T, std::tuple<Ts3...>>::type;
+		using type = typename __detail::__types_n_helper<types<Ts1...>, T, types<Ts3...>>::type;
 	};
+	// 交集
 	template <typename U1, typename U2>
-	using tuple_n_t = typename tuple_n<std::tuple<>, U1, U2>::type;
+	using types_n_t = typename types_n<types<>, U1, U2>::type;
 
 	// 差集
 	template <typename...>
-	struct tuple_x;
+	struct types_x;
 	template <
 		template <typename...> typename Tv1,
 		template <typename...> typename Tv3,
 		typename... Ts1,
 		typename... Ts3,
 		typename T>
-	struct tuple_x<Tv1<Ts1...>, T, Tv3<Ts3...>>
+	struct types_x<Tv1<Ts1...>, T, Tv3<Ts3...>>
 	{
-		using type = typename __detail::__tuple_x_helper<std::tuple<Ts1...>, T, std::tuple<Ts3...>>::type;
+		using type = typename __detail::__types_x_helper<types<Ts1...>, T, types<Ts3...>>::type;
 	};
+	// 差集
 	template <typename U1, typename U2>
-	using tuple_x_t = typename tuple_x<std::tuple<>, U1, U2>::type;
+	using types_x_t = typename types_x<types<>, U1, U2>::type;
 
 	// 并集
 	template <typename...>
-	struct tuple_u;
+	struct types_u;
 	template <
 		template <typename...> class Tv1,
 		template <typename...> class Tv2,
 		typename... Ts1,
 		typename... Ts2>
-	struct tuple_u<Tv1<Ts1...>, Tv2<Ts2...>>
+	struct types_u<Tv1<Ts1...>, Tv2<Ts2...>>
 	{
-		using type = typename __detail::_tuple_u_helper<std::tuple<>, std::tuple<Ts1..., Ts2...>>::type;
+		using type = typename __detail::__types_u_helper<types<>, types<Ts1..., Ts2...>>::type;
 	};
+	// 并集
 	template <typename _tuple1, typename _tuple2>
-	using tuple_u_t = typename tuple_u<_tuple1, _tuple2>::type;
+	using types_u_t = typename types_u<_tuple1, _tuple2>::type;
 } // namespace types
+#endif
