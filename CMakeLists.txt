@@ -3,6 +3,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake_module ${CMAKE_MODULE_PA
 cmake_path(GET CMAKE_CURRENT_LIST_DIR FILENAME PROJ)
 project(${PROJ} LANGUAGES CXX C)
 include(router)
+include(variable)
 if(MINGW)
     add_link_options(-static)
 endif()

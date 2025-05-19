@@ -3,6 +3,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #define __MODULE_NAME__ "@MODULE_NAME@"
-#define PyInit_MODULE PyInit__@MODULE_NAME@
+#define PyInit_MODULE PyInit_@MODULE_NAME@
+#define __EXEC_PREFIX__ "@EXEC_PREFIX@"
 PyMODINIT_FUNC PyInit_MODULE();
 #endif

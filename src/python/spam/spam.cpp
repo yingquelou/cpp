@@ -91,7 +91,7 @@ static PyMethodDef methods[]{
      {
          return PyLong_FromLong(GetLastError());
      },
-     METH_NOARGS}, 
+     METH_VARARGS}, 
     {"SetLastError", [](PyObject *self, PyObject *args) -> PyObject *
      {
          PyObject *err_py = nullptr;
@@ -103,7 +103,7 @@ static PyMethodDef methods[]{
          }
          SetLastError(PyLong_AsLong(err_py));
          Py_RETURN_NONE;
-        }},
+        },METH_VARARGS},
     {nullptr}};
 static PyModuleDef def{
     PyModuleDef_HEAD_INIT,
