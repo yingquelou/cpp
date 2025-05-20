@@ -155,12 +155,6 @@
             "name": "MSVC_X64_X86_RELEASE",
             "configurePreset": "MSVC_X64_X86",
             "configuration": "Release"
-        },
-        {
-            "name": "GCC_MINGW_DEBUG",
-            "description": "",
-            "displayName": "",
-            "configurePreset": "GCC_MINGW_DEBUG"
         }
     ],
     "workflowPresets": [

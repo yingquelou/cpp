@@ -15,7 +15,7 @@ PROPERTY COMPILE_OPTIONS
 "-directors"
 # "-oh" "ok.h"
 )
-if(MODULE_NAME)
+if(MODULE_NAME STREQUAL PROJ)
     set(DEBUG_MODULE TYPE STATIC NO_PROXY)
 endif()
 
@@ -23,8 +23,8 @@ swig_add_library(${PROJ}
 ${DEBUG_MODULE}
 LANGUAGE python SOURCES utils.i)
 target_link_libraries(${PROJ} Python::Python)
-if(NOT DEFINED MODULE_NAME)
-    install(TARGETS ${PROJ} DESTINATION ${Python_SITELIB})
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/utils.py DESTINATION ${Python_SITELIB})
-endif()
+# if(NOT MODULE_NAME STREQUAL PROJ)
+#     install(TARGETS ${PROJ} DESTINATION ${Python_SITELIB})
+#     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/utils.py DESTINATION ${Python_SITELIB})
+# endif()
 cmake_policy(POP)
