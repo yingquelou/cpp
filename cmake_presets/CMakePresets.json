@@ -1,0 +1,365 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 19
+    },
+    "configurePresets": [
+        {
+            "name": "DIR",
+            "description": "Root of the configure preset inheritance tree of cmake",
+            "hidden": true,
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "binaryDir": "${sourceDir}/out/build/${presetName}"
+        },
+        {
+            "name": "NINJA",
+            "generator": "Ninja",
+            "hidden": true
+        },
+        {
+            "name": "DEBUG",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "RELEASE",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "RELWITHDEBINFO",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "MINSIZEREL",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "MinSizeRel"
+            }
+        },
+        {
+            "name": "NINJA_MULTI_CONFIG",
+            "hidden": true,
+            "generator": "Ninja Multi-Config"
+        },
+        {
+            "name": "GCC",
+            "description": "使用编译器: C = gcc, CXX = g++",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
+            "name": "GCC_RELWITHDEBINFO",
+            "description": "使用编译器: C = gcc, CXX = g++",
+            "inherits": [
+                "DIR",
+                "GCC",
+                "NINJA",
+                "RELWITHDEBINFO"
+            ]
+        },
+        {
+            "name": "GCC_MINSIZEREL",
+            "description": "使用编译器: C = gcc, CXX = g++",
+            "inherits": [
+                "DIR",
+                "GCC",
+                "NINJA",
+                "MINSIZEREL"
+            ]
+        },
+        {
+            "name": "GCC_DEBUG",
+            "description": "使用编译器: C = gcc, CXX = g++",
+            "inherits": [
+                "DIR",
+                "GCC",
+                "NINJA",
+                "DEBUG"
+            ]
+        },
+        {
+            "name": "GCC_RELEASE",
+            "description": "使用编译器: C = gcc, CXX = g++",
+            "inherits": [
+                "DIR",
+                "GCC",
+                "NINJA",
+                "RELEASE"
+            ]
+        },
+        {
+            "name": "CLANG",
+            "description": "使用编译器: C = clang, CXX = clang++",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "CLANG_RELWITHDEBINFO",
+            "description": "使用编译器: C = clang, CXX = clang++",
+            "inherits": [
+                "DIR",
+                "CLANG",
+                "NINJA",
+                "RELWITHDEBINFO"
+            ]
+        },
+        {
+            "name": "CLANG_MINSIZEREL",
+            "description": "使用编译器: C = clang, CXX = clang++",
+            "inherits": [
+                "DIR",
+                "CLANG",
+                "NINJA",
+                "MINSIZEREL"
+            ]
+        },
+        {
+            "name": "CLANG_DEBUG",
+            "description": "使用编译器: C = clang, CXX = clang++",
+            "inherits": [
+                "DIR",
+                "CLANG",
+                "NINJA",
+                "DEBUG"
+            ]
+        },
+        {
+            "name": "CLANG_RELEASE",
+            "description": "使用编译器: C = clang, CXX = clang++",
+            "inherits": [
+                "DIR",
+                "CLANG",
+                "NINJA",
+                "RELEASE"
+            ]
+        },
+        {
+            "name": "MSVC",
+            "hidden": true,
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_CXX_COMPILER": "cl"
+            }
+        },
+        {
+            "name": "MSVC_X86",
+            "description": "将编译器用于 Visual Studio (x86 体系结构)",
+            "hidden": true,
+            "toolset": {
+                "strategy": "external",
+                "value": "host=x86"
+            },
+            "architecture": {
+                "strategy": "external",
+                "value": "win32"
+            },
+            "inherits": [
+                "MSVC",
+                "DIR",
+                "NINJA"
+            ]
+        },
+        {
+            "name": "MSVC_X86_DEBUG",
+            "description": "将编译器用于 Visual Studio (x86 体系结构)",
+            "inherits": [
+                "MSVC_X86",
+                "DEBUG"
+            ]
+        },
+        {
+            "name": "MSVC_X86_RELEASE",
+            "description": "将编译器用于 Visual Studio (x86 体系结构)",
+            "inherits": [
+                "MSVC_X86",
+                "RELEASE"
+            ]
+        },
+        {
+            "name": "MSVC_X86_RELWITHDEBINFO",
+            "description": "将编译器用于 Visual Studio (x86 体系结构)",
+            "inherits": [
+                "MSVC_X86",
+                "RELWITHDEBINFO"
+            ]
+        },
+        {
+            "name": "MSVC_X86_MINSIZEREL",
+            "description": "将编译器用于 Visual Studio (x86 体系结构)",
+            "inherits": [
+                "MSVC_X86",
+                "MINSIZEREL"
+            ]
+        },
+        {
+            "name": "MSVC_X64",
+            "inherits": [
+                "MSVC",
+                "DIR",
+                "NINJA"
+            ],
+            "hidden": true,
+            "description": "将编译器用于 Visual Studio (x64 体系结构)",
+            "toolset": {
+                "strategy": "external",
+                "value": "host=x64"
+            },
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            }
+        },
+        {
+            "name": "MSVC_X64_DEBUG",
+            "description": "将编译器用于 Visual Studio (x64 体系结构)",
+            "inherits": [
+                "MSVC_X64",
+                "DEBUG"
+            ]
+        },
+        {
+            "name": "MSVC_X64_RELEASE",
+            "description": "将编译器用于 Visual Studio (x64 体系结构)",
+            "inherits": [
+                "MSVC_X64",
+                "RELEASE"
+            ]
+        },
+        {
+            "name": "MSVC_X64_RELWITHDEBINFO",
+            "description": "将编译器用于 Visual Studio (x64 体系结构)",
+            "inherits": [
+                "MSVC_X64",
+                "RELWITHDEBINFO"
+            ]
+        },
+        {
+            "name": "MSVC_X64_MINSIZEREL",
+            "description": "将编译器用于 Visual Studio (x64 体系结构)",
+            "inherits": [
+                "MSVC_X64",
+                "MINSIZEREL"
+            ]
+        },
+        {
+            "name": "MSVC_X86_X64",
+            "description": "将编译器用于 Visual Studio (x86_x64 体系结构)",
+            "hidden": true,
+            "toolset": {
+                "strategy": "external",
+                "value": "host=x86"
+            },
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            },
+            "inherits": [
+                "MSVC",
+                "DIR",
+                "NINJA"
+            ]
+        },
+        {
+            "name": "MSVC_X86_X64_DEBUG",
+            "description": "将编译器用于 Visual Studio (x86_x64 体系结构)",
+            "inherits": [
+                "MSVC_X86_X64",
+                "DEBUG"
+            ]
+        },
+        {
+            "name": "MSVC_X86_X64_RELEASE",
+            "description": "将编译器用于 Visual Studio (x86_x64 体系结构)",
+            "inherits": [
+                "MSVC_X86_X64",
+                "RELEASE"
+            ]
+        },
+        {
+            "name": "MSVC_X86_X64_RELWITHDEBINFO",
+            "description": "将编译器用于 Visual Studio (x86_x64 体系结构)",
+            "inherits": [
+                "MSVC_X86_X64",
+                "RELWITHDEBINFO"
+            ]
+        },
+        {
+            "name": "MSVC_X86_X64_MINSIZEREL",
+            "description": "将编译器用于 Visual Studio (x86_x64 体系结构)",
+            "inherits": [
+                "MSVC_X86_X64",
+                "MINSIZEREL"
+            ]
+        },
+        {
+            "name": "MSVC_X64_X86",
+            "description": "将编译器用于 Visual Studio (x64_x86 体系结构)",
+            "toolset": {
+                "strategy": "external",
+                "value": "host=x64"
+            },
+            "architecture": {
+                "strategy": "external",
+                "value": "win32"
+            },
+            "hidden": true,
+            "inherits": [
+                "MSVC",
+                "DIR",
+                "NINJA"
+            ]
+        },
+        {
+            "name": "MSVC_X64_X86_DEBUG",
+            "description": "将编译器用于 Visual Studio (x64_x86 体系结构)",
+            "inherits": [
+                "MSVC_X64_X86",
+                "DEBUG"
+            ]
+        },
+        {
+            "name": "MSVC_X64_X86_RELEASE",
+            "description": "将编译器用于 Visual Studio (x64_x86 体系结构)",
+            "inherits": [
+                "MSVC_X64_X86",
+                "RELEASE"
+            ]
+        },
+        {
+            "name": "MSVC_X64_X86_RELWITHDEBINFO",
+            "description": "将编译器用于 Visual Studio (x64_x86 体系结构)",
+            "inherits": [
+                "MSVC_X64_X86",
+                "RELWITHDEBINFO"
+            ]
+        },
+        {
+            "name": "MSVC_X64_X86_MINSIZEREL",
+            "description": "将编译器用于 Visual Studio (x64_x86 体系结构)",
+            "inherits": [
+                "MSVC_X64_X86",
+                "MINSIZEREL"
+            ]
+        }
+    ]
+}

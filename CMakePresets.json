@@ -2,149 +2,224 @@
     "version": 6,
     "cmakeMinimumRequired": {
         "major": 3,
-        "minor": 19,
-        "patch": 0
+        "minor": 19
     },
     "configurePresets": [
         {
-            "name": "BASE",
-            "description": "Root of the configure preset inheritance tree of cmake",
+            "name": "DIR",
+            "description": "configure installDir and binaryDir",
             "hidden": true,
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "binaryDir": "${sourceDir}/out/build/${presetName}"
+        },
+        {
+            "name": "NINJA",
+            "description": "select 'Ninja Multi-Config' generator",
+            "generator": "Ninja Multi-Config",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
-            }
+                "CMAKE_CONFIGURATION_TYPES": "Debug;Release;MinSizeRel;RelWithDebInfo"
+            },
+            "hidden": true
         },
         {
             "name": "GCC",
-            "hidden": true,
-            "inherits": "BASE",
+            "description": "使用编译器: C = gcc, CXX = g++",
+            "inherits": [
+                "DIR",
+                "NINJA"
+            ],
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "gcc",
                 "CMAKE_CXX_COMPILER": "g++"
             }
         },
         {
-            "name": "GCC_MINGW",
-            "hidden": true,
-            "generator": "MinGW Makefiles",
-            "inherits": "GCC"
-        },
-        {
-            "name": "GCC_MINGW_DEBUG",
-            "displayName": "GCC x86_64-w64-mingw32 (mingw64) Debug",
-            "description": "使用编译器: C = gcc, CXX = g++",
-            "inherits": "GCC_MINGW",
+            "name": "CLANG",
+            "description": "使用编译器: C = clang, CXX = clang++",
+            "inherits": [
+                "DIR",
+                "NINJA"
+            ],
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
-            }
-        },
-        {
-            "name": "GCC_MINGW_RELEASE",
-            "displayName": "GCC x86_64-w64-mingw32 (mingw64) Release",
-            "description": "使用编译器: C = gcc, CXX = g++",
-            "inherits": "GCC_MINGW",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
-            }
-        },
-        {
-            "name": "GCC_UNIX",
-            "hidden": true,
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Linux"
-            },
-            "generator": "Unix Makefiles",
-            "inherits": "GCC"
-        },
-        {
-            "name": "GCC_UNIX_DEBUG",
-            "description": "使用编译器: C = gcc, CXX = g++",
-            "inherits": "GCC_UNIX",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
-            }
-        },
-        {
-            "name": "GCC_UNIX_RELEASE",
-            "description": "使用编译器: C = gcc, CXX = g++",
-            "inherits": "GCC_UNIX",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
             }
         },
         {
             "name": "MSVC",
+            "hidden": true,
             "condition": {
                 "type": "equals",
                 "lhs": "${hostSystemName}",
                 "rhs": "Windows"
             },
-            "generator": "Visual Studio 17 2022",
-            "hidden": true,
-            "inherits": "BASE"
+            "inherits": [
+                "DIR",
+                "NINJA"
+            ],
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_CXX_COMPILER": "cl"
+            }
         },
         {
             "name": "MSVC_X86",
-            "description": "将编译器用于 Visual Studio 17 2022 (x86 体系结构)",
-            "toolset": "host=x86",
-            "architecture": "win32",
+            "description": "将编译器用于 Visual Studio (x86 体系结构)",
+            "toolset": {
+                "strategy": "external",
+                "value": "host=x86"
+            },
+            "architecture": {
+                "strategy": "external",
+                "value": "win32"
+            },
             "inherits": "MSVC"
         },
         {
             "name": "MSVC_X64",
             "inherits": "MSVC",
-            "description": "将编译器用于 Visual Studio 17 2022 (x64 体系结构)",
-            "toolset": "host=x64",
-            "architecture": "x64"
+            "description": "将编译器用于 Visual Studio (x64 体系结构)",
+            "toolset": {
+                "strategy": "external",
+                "value": "host=x64"
+            },
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            }
         },
         {
             "name": "MSVC_X86_X64",
-            "description": "将编译器用于 Visual Studio 17 2022 (x86_x64 体系结构)",
-            "toolset": "host=x86",
-            "architecture": "x64",
+            "description": "将编译器用于 Visual Studio (x86_x64 体系结构)",
+            "toolset": {
+                "strategy": "external",
+                "value": "host=x86"
+            },
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            },
             "inherits": "MSVC"
         },
         {
             "name": "MSVC_X64_X86",
-            "description": "将编译器用于 Visual Studio 17 2022 (x64_x86 体系结构)",
-            "toolset": "host=x64",
-            "architecture": "win32",
+            "description": "将编译器用于 Visual Studio (x64_x86 体系结构)",
+            "toolset": {
+                "strategy": "external",
+                "value": "host=x64"
+            },
+            "architecture": {
+                "strategy": "external",
+                "value": "win32"
+            },
             "inherits": "MSVC"
         }
     ],
     "buildPresets": [
         {
+            "name": "MINSIZEREL",
+            "hidden": true,
+            "configuration": "MinSizeRel"
+        },
+        {
+            "name": "RELEASE",
+            "hidden": true,
+            "configuration": "Release"
+        },
+        {
+            "name": "DEBUG",
+            "hidden": true,
+            "configuration": "Debug"
+        },
+        {
+            "name": "RELWITHDEBINFO",
+            "hidden": true,
+            "configuration": "RelWithDebInfo"
+        },
+        {
+            "name": "GCC_DEBUG",
+            "configurePreset": "GCC",
+            "configuration": "Debug"
+        },
+        {
+            "name": "CLANG_DEBUG",
+            "configurePreset": "CLANG",
+            "configuration": "Debug"
+        },
+        {
+            "name": "GCC_MINSIZEREL",
+            "configurePreset": "GCC",
+            "inherits": "MINSIZEREL"
+        },
+        {
+            "name": "GCC_RELEASE",
+            "configurePreset": "GCC",
+            "inherits": "RELEASE"
+        },
+        {
+            "name": "CLANG_RELEASE",
+            "configurePreset": "CLANG",
+            "inherits": "RELEASE"
+        },
+        {
+            "name": "GCC_RELWITHDEBINFO",
+            "configurePreset": "GCC",
+            "inherits": "RELWITHDEBINFO"
+        },
+        {
+            "name": "CLANG_RELWITHDEBINFO",
+            "configurePreset": "CLANG",
+            "inherits": "RELWITHDEBINFO"
+        },
+        {
             "name": "MSVC_X86_DEBUG",
             "configurePreset": "MSVC_X86",
-            "configuration": "Debug"
+            "inherits": "DEBUG"
         },
         {
             "name": "MSVC_X86_RELEASE",
             "configurePreset": "MSVC_X86",
-            "configuration": "Release"
+            "inherits": "RELEASE"
+        },
+        {
+            "name": "MSVC_X86_MINSIZEREL",
+            "configurePreset": "MSVC_X86",
+            "inherits": "MINSIZEREL"
+        },
+        {
+            "name": "MSVC_X86_RELWITHDEBINFO",
+            "configurePreset": "MSVC_X86",
+            "inherits": "RELWITHDEBINFO"
         },
         {
             "name": "MSVC_X64_DEBUG",
             "configurePreset": "MSVC_X64",
-            "configuration": "Debug"
+            "inherits": "DEBUG"
         },
         {
             "name": "MSVC_X64_RELEASE",
             "configurePreset": "MSVC_X64",
-            "configuration": "Release"
+            "inherits": "RELEASE"
+        },
+        {
+            "name": "MSVC_X64_RELWITHDEBINFO",
+            "configurePreset": "MSVC_X64",
+            "inherits": "RELWITHDEBINFO"
         },
         {
             "name": "MSVC_X86_X64_DEBUG",
             "configurePreset": "MSVC_X86_X64",
-            "configuration": "Debug"
+            "inherits": "DEBUG"
         },
         {
             "name": "MSVC_X86_X64_RELEASE",
             "configurePreset": "MSVC_X86_X64",
-            "configuration": "Release"
+            "inherits": "RELEASE"
+        },
+        {
+            "name": "MSVC_X86_X64_RELWITHDEBINFO",
+            "configurePreset": "MSVC_X86_X64",
+            "inherits": "RELWITHDEBINFO"
         },
         {
             "name": "MSVC_X64_X86_DEBUG",
@@ -154,22 +229,27 @@
         {
             "name": "MSVC_X64_X86_RELEASE",
             "configurePreset": "MSVC_X64_X86",
-            "configuration": "Release"
-        }
-    ],
-    "workflowPresets": [
+            "inherits": "RELEASE"
+        },
         {
-            "name": "MSVC_X64_RELEASE",
-            "steps": [
-                {
-                    "name": "MSVC_X64",
-                    "type": "configure"
-                },
-                {
-                    "name": "MSVC_X64_RELEASE",
-                    "type": "build"
-                }
-            ]
+            "name": "MSVC_X64_X86_RELWITHDEBINFO",
+            "configurePreset": "MSVC_X64_X86",
+            "inherits": "RELWITHDEBINFO"
+        },
+        {
+            "name": "MSVC_X64_MINSIZEREL",
+            "configuration": "MinSizeRel",
+            "configurePreset": "MSVC_X64"
+        },
+        {
+            "name": "MSVC_X86_X64_MINSIZEREL",
+            "configuration": "MinSizeRel",
+            "configurePreset": "MSVC_X86_X64"
+        },
+        {
+            "name": "MSVC_X64_X86_MINSIZEREL",
+            "configuration": "MinSizeRel",
+            "configurePreset": "MSVC_X64_X86"
         }
     ]
 }

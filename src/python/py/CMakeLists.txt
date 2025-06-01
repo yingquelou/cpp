@@ -1,8 +1,0 @@
-cmake_path(GET CMAKE_CURRENT_LIST_DIR STEM PROJ)
-if(MODULE_NAME)
-    cmake_path(GET Python_RUNTIME_LIBRARY_DIRS PARENT_PATH EXEC_PREFIX)
-    configure_file(debug.conf.h.in debug.conf.h)
-    include_directories(${CMAKE_CURRENT_BINARY_DIR})
-    add_executable(${PROJ} main.cpp)
-    target_link_libraries(${PROJ} Python::Python ${MODULE_NAME})
-endif()
