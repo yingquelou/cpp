@@ -1,2 +1,6 @@
 ﻿cmake_path(GET CMAKE_CURRENT_LIST_DIR FILENAME PROJ)
-router_files(INCLUDES *.c EXCLUDES test2.c)
+if(LINUX)
+    add_executable(${PROJ} test2.c)
+elseif(WIN32)
+    add_executable(${PROJ} test.c)
+endif()

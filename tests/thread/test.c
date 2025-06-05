@@ -5,7 +5,9 @@ void *fun(void *tmp)
 {
     int i = 0;
     for (; i < 10; ++i)
-        printf("this is %d.\n", *(int *)tmp);
+    {pthread_self();
+        printf("pthread %#x keep %d,iter %d.\n", pthread_self(),*(int *)tmp,i);
+    }
 }
 int main(void)
 {
