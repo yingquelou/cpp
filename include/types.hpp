@@ -36,10 +36,10 @@ namespace types
 			using type = typename __conjunction_impl<void, _B2, _Bn...>::type;
 		};
 
-		template <template <typename> typename, typename...>
+		template <template <typename> class, typename...>
 		struct __filter_impl;
 		// predicate
-		template <template <typename> typename Predicate,
+		template <template <typename> class Predicate,
 				  typename T,
 				  typename... Ts1,
 				  typename... Ts2>
@@ -49,7 +49,7 @@ namespace types
 												   typename __filter_impl<Predicate, types<Ts1..., T>, types<Ts2...>>::type,
 												   typename __filter_impl<Predicate, types<Ts1...>, types<Ts2...>>::type>::type;
 		};
-		template <template <typename> typename Predicate,
+		template <template <typename> class Predicate,
 				  typename... Ts>
 		struct __filter_impl<Predicate, types<Ts...>, types<>>
 		{
@@ -77,11 +77,11 @@ namespace types
 	{
 	};
 
-	template <template <typename> typename, typename...>
+	template <template <typename> class, typename...>
 	struct filter;
 	template <
-		template <typename> typename Predicate,
-		template <typename...> typename Container,
+		template <typename> class Predicate,
+		template <typename...> class Container,
 		typename... Ts>
 	struct filter<Predicate, Container<Ts...>>
 	{
@@ -89,7 +89,7 @@ namespace types
 	};
 
 	template <
-		template <typename> typename Predicate,
+		template <typename> class Predicate,
 		typename Container>
 	using filter_t = typename filter<Predicate, Container>::type;
 #if CPP_STANDARD >= STD_CXX14
@@ -106,9 +106,9 @@ namespace types
 		template <typename...>
 		struct __types_n_helper;
 		template <
-			template <typename...> typename Tv1,
-			template <typename...> typename Tv2,
-			template <typename...> typename Tv3,
+			template <typename...> class Tv1,
+			template <typename...> class Tv2,
+			template <typename...> class Tv3,
 			typename... Ts1,
 			typename... Ts2,
 			typename... Ts3,
@@ -118,9 +118,9 @@ namespace types
 			using type = typename std::conditional<bool(disjunction<std::is_same<T, Ts2>...>::value), typename __types_n_helper<Tv1<Ts1..., T>, Tv2<Ts2...>, Tv3<Ts3...>>::type, typename __types_n_helper<Tv1<Ts1...>, Tv2<Ts2...>, Tv3<Ts3...>>::type>::type;
 		};
 		template <
-			template <typename...> typename Tv1,
-			template <typename...> typename Tv2,
-			template <typename...> typename Tv3,
+			template <typename...> class Tv1,
+			template <typename...> class Tv2,
+			template <typename...> class Tv3,
 			typename... Ts1,
 			typename... Ts2>
 		struct __types_n_helper<Tv1<Ts1...>, Tv2<Ts2...>, Tv3<>>
@@ -131,9 +131,9 @@ namespace types
 		template <typename...>
 		struct __types_x_helper;
 		template <
-			template <typename...> typename Tv1,
-			template <typename...> typename Tv2,
-			template <typename...> typename Tv3,
+			template <typename...> class Tv1,
+			template <typename...> class Tv2,
+			template <typename...> class Tv3,
 			typename... Ts1,
 			typename... Ts2,
 			typename... Ts3,
@@ -143,9 +143,9 @@ namespace types
 			using type = typename std::conditional<bool(disjunction<std::is_same<T, Ts3>...>::value), typename __types_x_helper<Tv1<Ts1...>, Tv2<Ts2...>, Tv3<Ts3...>>::type, typename __types_x_helper<Tv1<Ts1..., T>, Tv2<Ts2...>, Tv3<Ts3...>>::type>::type;
 		};
 		template <
-			template <typename...> typename Tv1,
-			template <typename...> typename Tv2,
-			template <typename...> typename Tv3,
+			template <typename...> class Tv1,
+			template <typename...> class Tv2,
+			template <typename...> class Tv3,
 			typename... Ts1,
 			typename... Ts3>
 		struct __types_x_helper<Tv1<Ts1...>, Tv2<>, Tv3<Ts3...>>
@@ -181,8 +181,8 @@ namespace types
 	template <typename...>
 	struct types_n;
 	template <
-		template <typename...> typename Tv1,
-		template <typename...> typename Tv3,
+		template <typename...> class Tv1,
+		template <typename...> class Tv3,
 		typename... Ts1,
 		typename... Ts3,
 		typename T>
@@ -198,8 +198,8 @@ namespace types
 	template <typename...>
 	struct types_x;
 	template <
-		template <typename...> typename Tv1,
-		template <typename...> typename Tv3,
+		template <typename...> class Tv1,
+		template <typename...> class Tv3,
 		typename... Ts1,
 		typename... Ts3,
 		typename T>

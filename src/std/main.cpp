@@ -145,7 +145,7 @@ struct SizeGreater
 {
     static constexpr bool value = (sizeof(T1) > sizeof(T2));
 };
-
+#include<iostream>
 int main()
 {
     using Unsorted = TypeList<A, B, C, D,int,short,long>;
@@ -159,5 +159,6 @@ int main()
 
     // 自定义降序排序
     using SortedDesc = MergeSort<Unsorted, SizeGreater>::type;
+    std::cout << typeid(SortedAsc).name();
     // SortedDesc 应该是 TypeList<C, D, A, B>
 }
