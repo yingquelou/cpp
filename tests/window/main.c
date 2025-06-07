@@ -3,6 +3,7 @@
 #endif
 
 #include <windows.h>
+#include "resource.h"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 int APIENTRY WinMain(HINSTANCE hInstance,
@@ -14,10 +15,10 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     const wchar_t CLASS_NAME[] = L"Sample Window Class";
 
     WNDCLASS wc = {};
-
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = CLASS_NAME;
+    // wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MYICON));
 
     RegisterClass(&wc);
     // Create the window.
@@ -31,11 +32,13 @@ int APIENTRY WinMain(HINSTANCE hInstance,
         // Size and position
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 
-        NULL,      // Parent window
-        NULL,      // Menu
-        hInstance, // Instance handle
-        NULL       // Additional application data
+        NULL,                                             // Parent window
+        LoadMenu(hInstance, MAKEINTRESOURCE(IDR_MYMENU)), 
+        // Menu
+        hInstance,                                        // Instance handle
+        NULL                                              // Additional application data
     );
+    ;
 
     if (hwnd == NULL)
     {
@@ -60,14 +63,28 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
-    case WM_CREATE:
+    case WM_COMMAND:
+    {
+        switch (LOWORD(wParam))
+        {
+        case ID_FILE_OPEN:
+            MessageBox(NULL, L"OPEN", L"tip", MB_OK);
+            break;
+        case ID_FILE_EXIT:
+            PostQuitMessage(0);
+            break;
+
+        default:
+            break;
+        }
+    }
         return 0;
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
-    case WM_LBUTTONDOWN:
-        MessageBox(hwnd, L"Ok", L"tip", MB_CANCELTRYCONTINUE);
-        return 0;
+        // case WM_LBUTTONDOWN:
+        //     MessageBox(hwnd, L"Ok", L"tip", MB_CANCELTRYCONTINUE);
+        //     return 0;
 
     case WM_PAINT:
     {
@@ -81,6 +98,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         EndPaint(hwnd, &ps);
     }
         return 0;
+    default:
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
-    return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }

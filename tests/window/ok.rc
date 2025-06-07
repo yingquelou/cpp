@@ -1,0 +1,16 @@
+#include"resource.h"
+STRINGTABLE
+BEGIN
+    IDS_HELLO "pl"
+END
+
+// IDI_MYICON ICON "007.ico"
+
+IDR_MYMENU MENU
+BEGIN
+    POPUP "&文件(&F)"
+    BEGIN
+        MENUITEM "打开(&O)", ID_FILE_OPEN
+        MENUITEM "退出(&Q)", ID_FILE_EXIT
+    END
+END

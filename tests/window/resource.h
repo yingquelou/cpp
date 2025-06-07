@@ -1,0 +1,6 @@
+#define IDS_HELLO 12
+#define IDR_MYMENU 301
+#define ID_FILE_OPEN 401
+#define ID_FILE_EXIT 402
+#define IDI_MYICON 101
+
