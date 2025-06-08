@@ -58,3 +58,4 @@ out
 venv/
 .venv/
 __pycache__
+.vs

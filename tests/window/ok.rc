@@ -1,16 +1,125 @@
-#include"resource.h"
-STRINGTABLE
-BEGIN
-    IDS_HELLO "pl"
-END
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体，中国) resources
 
-// IDI_MYICON ICON "007.ico"
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#pragma code_page(936)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
 
 IDR_MYMENU MENU
 BEGIN
     POPUP "&文件(&F)"
     BEGIN
-        MENUITEM "打开(&O)", ID_FILE_OPEN
-        MENUITEM "退出(&Q)", ID_FILE_EXIT
+        MENUITEM "打开(&O)",                      ID_FILE_OPEN
+        MENUITEM "退出(&Q)",                      ID_FILE_EXIT
     END
 END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_TOOLBAR            BITMAP                  "toolbar.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_ACCELERATOR1 ACCELERATORS
+BEGIN
+    "K",            IKEY_OK,                VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// HTML
+//
+
+IDR_HTML                HTML                    "index.html"
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON                ICON                    "icon.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Ribbon
+//
+
+IDR_RIBBON              RT_RIBBON_XML           "ribbon.mfcribbon-ms"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_HELLO               "hello world!"
+END
+
+#endif    // 中文(简体，中国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

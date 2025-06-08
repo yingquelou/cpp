@@ -13,13 +13,12 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 {
     // Register the window class.
     const wchar_t CLASS_NAME[] = L"Sample Window Class";
-
+    // HGLOBAL hs = LoadResource(hInstance, MAKEINTRESOURCE(IDR_HTML));
     WNDCLASS wc = {};
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = CLASS_NAME;
     // wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MYICON));
-
     RegisterClass(&wc);
     // Create the window.
 
@@ -31,12 +30,11 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
         // Size and position
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-
-        NULL,                                             // Parent window
-        LoadMenu(hInstance, MAKEINTRESOURCE(IDR_MYMENU)), 
+        NULL, // Parent window
+        LoadMenu(hInstance, MAKEINTRESOURCE(IDR_MYMENU)),
         // Menu
-        hInstance,                                        // Instance handle
-        NULL                                              // Additional application data
+        hInstance, // Instance handle
+        NULL       // Additional application data
     );
     ;
 
