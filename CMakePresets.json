@@ -6,250 +6,187 @@
     },
     "configurePresets": [
         {
-            "name": "DIR",
-            "description": "configure installDir and binaryDir",
+            "name": "base",
             "hidden": true,
-            "installDir": "${sourceDir}/out/install/${presetName}",
-            "binaryDir": "${sourceDir}/out/build/${presetName}"
+            "description": "Base configuration for all presets",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}"
         },
         {
-            "name": "NINJA",
-            "description": "select 'Ninja Multi-Config' generator",
+            "name": "ninja_multi",
+            "hidden": true,
+            "inherits": "base",
+            "description": "Ninja Multi-Config generator",
             "generator": "Ninja Multi-Config",
             "cacheVariables": {
-                "CMAKE_CONFIGURATION_TYPES": "Debug;Release;MinSizeRel;RelWithDebInfo"
-            },
-            "hidden": true
+                "CMAKE_CONFIGURATION_TYPES": "Debug;Release"
+            }
         },
         {
-            "name": "GCC",
-            "description": "使用编译器: C = gcc, CXX = g++",
-            "inherits": [
-                "DIR",
-                "NINJA"
-            ],
+            "name": "gcc",
+            "inherits": "ninja_multi",
+            "description": "GCC compiler (gcc/g++)",
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "gcc",
                 "CMAKE_CXX_COMPILER": "g++"
             }
         },
         {
-            "name": "CLANG",
-            "description": "使用编译器: C = clang, CXX = clang++",
-            "inherits": [
-                "DIR",
-                "NINJA"
-            ],
+            "name": "clang",
+            "inherits": "ninja_multi",
+            "description": "Clang compiler (clang/clang++)",
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "clang",
                 "CMAKE_CXX_COMPILER": "clang++"
             }
         },
         {
-            "name": "MSVC",
+            "name": "msvc_base",
             "hidden": true,
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Windows"
-            },
-            "inherits": [
-                "DIR",
-                "NINJA"
-            ],
+            "inherits": "ninja_multi",
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "cl",
-                "CMAKE_CXX_COMPILER": "cl"
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe"
             }
         },
         {
-            "name": "MSVC_X86",
-            "description": "将编译器用于 Visual Studio (x86 体系结构)",
-            "toolset": {
-                "strategy": "external",
-                "value": "host=x86"
-            },
+            "name": "msvc_x86",
+            "inherits": "msvc_base",
+            "description": "MSVC x86 configuration",
             "architecture": {
                 "strategy": "external",
                 "value": "win32"
             },
-            "inherits": "MSVC"
-        },
-        {
-            "name": "MSVC_X64",
-            "inherits": "MSVC",
-            "description": "将编译器用于 Visual Studio (x64 体系结构)",
-            "toolset": {
-                "strategy": "external",
-                "value": "host=x64"
-            },
-            "architecture": {
-                "strategy": "external",
-                "value": "x64"
-            }
-        },
-        {
-            "name": "MSVC_X86_X64",
-            "description": "将编译器用于 Visual Studio (x86_x64 体系结构)",
             "toolset": {
                 "strategy": "external",
                 "value": "host=x86"
-            },
+            }
+        },
+        {
+            "name": "msvc_x64",
+            "inherits": "msvc_base",
+            "description": "MSVC x64 configuration",
             "architecture": {
                 "strategy": "external",
                 "value": "x64"
             },
-            "inherits": "MSVC"
-        },
-        {
-            "name": "MSVC_X64_X86",
-            "description": "将编译器用于 Visual Studio (x64_x86 体系结构)",
             "toolset": {
                 "strategy": "external",
                 "value": "host=x64"
+            }
+        },
+        {
+            "name": "msvc_x86_x64",
+            "inherits": "msvc_base",
+            "description": "MSVC x86 host targeting x64",
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
             },
+            "toolset": {
+                "strategy": "external",
+                "value": "host=x86"
+            }
+        },
+        {
+            "name": "msvc_x64_x86",
+            "inherits": "msvc_base",
+            "description": "MSVC x64 host targeting x86",
             "architecture": {
                 "strategy": "external",
                 "value": "win32"
             },
-            "inherits": "MSVC"
+            "toolset": {
+                "strategy": "external",
+                "value": "host=x64"
+            }
         }
     ],
     "buildPresets": [
         {
-            "name": "MINSIZEREL",
+            "name": "build_debug",
             "hidden": true,
-            "configuration": "MinSizeRel"
+            "configuration": "Debug"
         },
         {
-            "name": "RELEASE",
+            "name": "build_release",
             "hidden": true,
             "configuration": "Release"
         },
         {
-            "name": "DEBUG",
-            "hidden": true,
-            "configuration": "Debug"
-        },
-        {
-            "name": "RELWITHDEBINFO",
+            "name": "build_relwithdebinfo",
             "hidden": true,
             "configuration": "RelWithDebInfo"
         },
         {
-            "name": "GCC_DEBUG",
-            "configurePreset": "GCC",
-            "configuration": "Debug"
+            "name": "build_minsizerel",
+            "hidden": true,
+            "configuration": "MinSizeRel"
         },
         {
-            "name": "CLANG_DEBUG",
-            "configurePreset": "CLANG",
-            "configuration": "Debug"
+            "name": "gcc_debug",
+            "configurePreset": "gcc",
+            "inherits": "build_debug"
         },
         {
-            "name": "GCC_MINSIZEREL",
-            "configurePreset": "GCC",
-            "inherits": "MINSIZEREL"
+            "name": "gcc_release",
+            "configurePreset": "gcc",
+            "inherits": "build_release"
         },
         {
-            "name": "GCC_RELEASE",
-            "configurePreset": "GCC",
-            "inherits": "RELEASE"
+            "name": "clang_debug",
+            "configurePreset": "clang",
+            "inherits": "build_debug"
         },
         {
-            "name": "CLANG_RELEASE",
-            "configurePreset": "CLANG",
-            "inherits": "RELEASE"
+            "name": "clang_release",
+            "configurePreset": "clang",
+            "inherits": "build_release"
         },
         {
-            "name": "GCC_RELWITHDEBINFO",
-            "configurePreset": "GCC",
-            "inherits": "RELWITHDEBINFO"
+            "name": "clang_relwithdebinfo",
+            "configurePreset": "clang",
+            "inherits": "build_relwithdebinfo"
         },
         {
-            "name": "CLANG_RELWITHDEBINFO",
-            "configurePreset": "CLANG",
-            "inherits": "RELWITHDEBINFO"
+            "name": "msvc_x86_debug",
+            "configurePreset": "msvc_x86",
+            "inherits": "build_debug"
         },
         {
-            "name": "MSVC_X86_DEBUG",
-            "configurePreset": "MSVC_X86",
-            "inherits": "DEBUG"
+            "name": "msvc_x86_release",
+            "configurePreset": "msvc_x86",
+            "inherits": "build_release"
         },
         {
-            "name": "MSVC_X86_RELEASE",
-            "configurePreset": "MSVC_X86",
-            "inherits": "RELEASE"
+            "name": "msvc_x64_debug",
+            "configurePreset": "msvc_x64",
+            "inherits": "build_debug"
         },
         {
-            "name": "MSVC_X86_MINSIZEREL",
-            "configurePreset": "MSVC_X86",
-            "inherits": "MINSIZEREL"
+            "name": "msvc_x64_release",
+            "configurePreset": "msvc_x64",
+            "inherits": "build_release"
         },
         {
-            "name": "MSVC_X86_RELWITHDEBINFO",
-            "configurePreset": "MSVC_X86",
-            "inherits": "RELWITHDEBINFO"
+            "name": "msvc_x86_x64_debug",
+            "configurePreset": "msvc_x86_x64",
+            "inherits": "build_debug"
         },
         {
-            "name": "MSVC_X64_DEBUG",
-            "configurePreset": "MSVC_X64",
-            "inherits": "DEBUG"
+            "name": "msvc_x86_x64_release",
+            "configurePreset": "msvc_x86_x64",
+            "inherits": "build_release"
         },
         {
-            "name": "MSVC_X64_RELEASE",
-            "configurePreset": "MSVC_X64",
-            "inherits": "RELEASE"
+            "name": "msvc_x64_x86_debug",
+            "configurePreset": "msvc_x64_x86",
+            "inherits": "build_debug"
         },
         {
-            "name": "MSVC_X64_RELWITHDEBINFO",
-            "configurePreset": "MSVC_X64",
-            "inherits": "RELWITHDEBINFO"
-        },
-        {
-            "name": "MSVC_X86_X64_DEBUG",
-            "configurePreset": "MSVC_X86_X64",
-            "inherits": "DEBUG"
-        },
-        {
-            "name": "MSVC_X86_X64_RELEASE",
-            "configurePreset": "MSVC_X86_X64",
-            "inherits": "RELEASE"
-        },
-        {
-            "name": "MSVC_X86_X64_RELWITHDEBINFO",
-            "configurePreset": "MSVC_X86_X64",
-            "inherits": "RELWITHDEBINFO"
-        },
-        {
-            "name": "MSVC_X64_X86_DEBUG",
-            "configurePreset": "MSVC_X64_X86",
-            "configuration": "Debug"
-        },
-        {
-            "name": "MSVC_X64_X86_RELEASE",
-            "configurePreset": "MSVC_X64_X86",
-            "inherits": "RELEASE"
-        },
-        {
-            "name": "MSVC_X64_X86_RELWITHDEBINFO",
-            "configurePreset": "MSVC_X64_X86",
-            "inherits": "RELWITHDEBINFO"
-        },
-        {
-            "name": "MSVC_X64_MINSIZEREL",
-            "configuration": "MinSizeRel",
-            "configurePreset": "MSVC_X64"
-        },
-        {
-            "name": "MSVC_X86_X64_MINSIZEREL",
-            "configuration": "MinSizeRel",
-            "configurePreset": "MSVC_X86_X64"
-        },
-        {
-            "name": "MSVC_X64_X86_MINSIZEREL",
-            "configuration": "MinSizeRel",
-            "configurePreset": "MSVC_X64_X86"
+            "name": "msvc_x64_x86_release",
+            "configurePreset": "msvc_x64_x86",
+            "inherits": "build_release"
         }
     ]
 }

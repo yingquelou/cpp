@@ -1,0 +1,11 @@
+cmake_path(GET CMAKE_CURRENT_LIST_DIR FILENAME PROJ)
+set(CMAKE_CXX_STANDARD 11)
+
+file(GLOB SOURCES *.cpp)
+foreach(SOURCE IN LISTS SOURCES)
+    cmake_path(GET SOURCE STEM CUR_PROJ)
+    add_executable(${CUR_PROJ} ${SOURCE})
+    if(MSVC)
+        target_compile_options(${CUR_PROJ} PRIVATE /utf-8)
+    endif()
+endforeach()

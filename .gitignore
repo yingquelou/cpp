@@ -52,7 +52,7 @@ Mkfile.old
 dkms.conf
 
 # my lost
-.vscode
+.vscode/
 out
 .antlr
 venv/

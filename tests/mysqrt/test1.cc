@@ -28,7 +28,7 @@ int main(void)
     for (mytype i = 1; i > 1e-15; i /= 10)
     {
         tmp = mysqrt(10.0, i);
-        printf("%.50llf %53.50llf\n", tmp, tmp * tmp);
+        printf("%.50Lf %53.50Lf\n", tmp, tmp * tmp);
     }
     return 0;
 }
