@@ -1,5 +1,7 @@
 cmake_policy(PUSH)
-cmake_policy(SET CMP0167 NEW)
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 NEW)
+endif()
 find_package(Boost)
 cmake_path(GET CMAKE_CURRENT_LIST_DIR FILENAME PROJ)
 project(${PROJ} LANGUAGES CXX)

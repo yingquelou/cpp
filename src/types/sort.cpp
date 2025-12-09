@@ -24,25 +24,29 @@ int main(int argc, char const *argv[]) {
                        long long, unsigned long long, long double, int, float>;
   print(A{});
   // 测试:排序
-  using count = typename t_sort::sort_count<size_less, A>::type;
-  static_assert(t_sort::is_sorted<size_less, count>::value,
+  using count = typename t_sort::sort_count<A, size_less>::type;
+  static_assert(t_sort::is_sorted<count, size_less>::value,
                 "counting_sort failed");
   print(count{});
-  using heap = typename t_sort::sort_heap<size_less, A>::type;
-  static_assert(t_sort::is_sorted<size_less, heap>::value, "sort_heap failed");
+  using heap = typename t_sort::sort_heap<A, size_less>::type;
+  static_assert(t_sort::is_sorted<heap, size_less>::value, "sort_heap failed");
   print(heap{});
-  using insert = typename t_sort::sort_insert<size_less, A>::type;
-  static_assert(t_sort::is_sorted<size_less, insert>::value,
+  using insert = typename t_sort::sort_insert<A, size_less>::type;
+  static_assert(t_sort::is_sorted<insert, size_less>::value,
                 "insert_sort failed");
   print(insert{});
-  using bubble = typename t_sort::sort_bubble<size_less, A>::type;
-  static_assert(t_sort::is_sorted<size_less, bubble>::value,
+  using bubble = typename t_sort::sort_bubble<A, size_less>::type;
+  static_assert(t_sort::is_sorted<bubble, size_less>::value,
                 "bubble_sort failed");
   print(bubble{});
-  using group = typename t_sort::sort_group<size_less, A>::type;
-  static_assert(t_sort::is_sorted<size_less, group>::value,
+  using group = typename t_sort::sort_group<A, size_less>::type;
+  static_assert(t_sort::is_sorted<group, size_less>::value,
                 "iterative_sort failed");
   print(group{});
+  using merge = typename t_sort::sort_merge<A, size_less>::type;
+  static_assert(t_sort::is_sorted<merge, size_less>::value,
+                "iterative_sort failed");
+  print(merge{});
   static_assert(type_equal<count, heap, insert, bubble, group>::value,
                 "iterative_sort failed");
   return 0;
