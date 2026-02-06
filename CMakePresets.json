@@ -10,7 +10,10 @@
             "hidden": true,
             "description": "Base configuration for all presets",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
-            "installDir": "${sourceDir}/out/install/${presetName}"
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "1"
+            }
         },
         {
             "name": "ninja_multi",

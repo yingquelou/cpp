@@ -1,3 +1,4 @@
+#include <tuple>
 #ifndef HYBRID_TYPE_SORT_HPP
 #define HYBRID_TYPE_SORT_HPP 1
 #include "types.hpp"
@@ -16,8 +17,7 @@ namespace types
 
     public:
       template <typename L, typename R>
-      using equal = std::integral_constant<bool, !(bool(_less<L, R>::value) ^
-                                                   bool(_greater<L, R>::value))>;
+      using equal = std::integral_constant<bool, !(static_cast<bool>(_less<L, R>::value) ^ static_cast<bool>(_greater<L, R>::value))>;
       template <typename L, typename R>
       using less =
           std::integral_constant<bool, _less<L, R>::value && !equal<L, R>::value>;
@@ -31,6 +31,39 @@ namespace types
       using greater_equal =
           std::integral_constant<bool, _greater<L, R>::value || equal<L, R>::value>;
     };
+
+    namespace __
+    {
+      template <typename Tuple, template <typename, typename> class Comparator>
+      class unique
+      {
+        using cmp = ComparatorAdapter<Comparator>;
+        template <typename CurTuple>
+        class helper
+        {
+        public:
+          using type = CurTuple;
+        };
+        template <typename T, typename... Ts>
+        class helper<std::tuple<T, Ts...>>
+        {
+          template <typename _T, std::size_t, typename>
+          using equal = typename cmp::template equal<_T, T>;
+          using splited = typename filter<equal, std::tuple<Ts...>>::type;
+          using equal_tuples =
+              typename concat<std::tuple<T>, typename splited::first_type>::type;
+
+        public:
+          using type = typename concat<
+              std::tuple<equal_tuples>,
+              typename helper<typename splited::second_type>::type>::type;
+        };
+
+      public:
+        using type = typename helper<Tuple>::type;
+      };
+    }
+
     // 以不同方式实现了排序
 
     namespace __impl_insert
@@ -103,10 +136,10 @@ namespace types
                            typename std::enable_if<(Pass > 1)>::type>
         {
         private:
-          typedef
+          using after_compare =
               typename std::conditional<cmp<First, Second>::value,
                                         std::pair<First, Second>,
-                                        std::pair<Second, First>>::type after_compare;
+                                        std::pair<Second, First>>::type;
           using rest_sorted = typename bubble_pass<
               Pass - 1,
               std::tuple<typename after_compare::second_type, Rest...>>::type;
@@ -120,12 +153,12 @@ namespace types
         struct bubble_sort_impl
         {
         private:
-          typedef
-              typename bubble_pass<RemainingPasses, CurrentTuple>::type after_pass;
+          using after_pass =
+              typename bubble_pass<RemainingPasses, CurrentTuple>::type;
 
         public:
-          typedef
-              typename bubble_sort_impl<RemainingPasses - 1, after_pass>::type type;
+          using type =
+              typename bubble_sort_impl<RemainingPasses - 1, after_pass>::type;
         };
         template <typename CurrentTuple>
         struct bubble_sort_impl<0, CurrentTuple>
@@ -134,8 +167,7 @@ namespace types
         };
 
       public:
-        typedef typename bubble_sort_impl<std::tuple_size<Tuple>::value, Tuple>::type
-            type;
+        using type = typename bubble_sort_impl<std::tuple_size<Tuple>::value, Tuple>::type;
       };
     } // namespace __impl_bubble
     using __impl_bubble::sort_bubble;
@@ -203,26 +235,6 @@ namespace types
       struct sort_group
       {
       private:
-        template <typename CurTuple>
-        class unique
-        {
-        public:
-          using type = CurTuple;
-        };
-        template <typename T, typename... Ts>
-        class unique<std::tuple<T, Ts...>>
-        {
-          template <typename _T, std::size_t, typename>
-          using equal = typename ComparatorAdapter<Comparator>::template equal<_T, T>;
-          using splited = typename filter<equal, std::tuple<Ts...>>::type;
-          using equals_tuple =
-              typename concat<std::tuple<T>, typename splited::first_type>::type;
-
-        public:
-          using type = typename concat<
-              std::tuple<equals_tuple>,
-              typename unique<typename splited::second_type>::type>::type;
-        };
         template <typename CurTuple, typename OtherTuple>
         class find_min_type;
         template <typename First, typename Second, typename... Ts1, typename... Ts2>
@@ -264,7 +276,7 @@ namespace types
         };
 
       public:
-        using type = typename build<typename unique<Tuple>::type>::type;
+        using type = typename build<typename __::unique<Tuple, Comparator>::type>::type;
       };
     } // namespace __impl_group
     using __impl_group::sort_group;
@@ -341,6 +353,8 @@ namespace types
       template <typename Tuple, template <typename, typename> class Comparator>
       class sort_merge
       {
+        template <typename L, typename R>
+        using cmp = Comparator<typename std::tuple_element<0, L>::type, typename std::tuple_element<0, R>::type>;
         template <typename List>
         struct helper;
         template <>
@@ -363,11 +377,12 @@ namespace types
 
         public:
           using type =
-              typename list_merge<SortedFirst, SortedSecond, Comparator>::type;
+              typename list_merge<SortedFirst, SortedSecond, cmp>::type;
         };
 
       public:
-        using type = typename helper<Tuple>::type;
+        using type = typename transfer<concat,
+                                       typename helper<typename __::unique<Tuple, Comparator>::type>::type>::type::type;
       };
     } // namespace __impl_merge
     using __impl_merge::sort_merge;
@@ -419,7 +434,7 @@ namespace types
         class helper<std::tuple<T, Ts...>>
         {
           template <typename _T, std::size_t, typename>
-          using is_small = std::integral_constant<bool, cmp<_T, T>::value>;
+          using is_small = cmp<_T, T>;
           using splited = typename filter<is_small, std::tuple<Ts...>>::type;
 
         public:

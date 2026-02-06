@@ -2,12 +2,16 @@
 #include <iostream>
 
 #ifdef _MSC_VER
-template <typename T> void print(T &&) {
+template <typename T>
+void print(T &&)
+{
   std::cout << typeid(T).name() << std::endl;
 }
 #else
 void print(std::tuple<>) { std::cout << std::endl; }
-template <typename T, typename... Ts> void print(std::tuple<T, Ts...> &&) {
+template <typename T, typename... Ts>
+void print(std::tuple<T, Ts...> &&)
+{
   std::cout << sizeof(T) << ':' << typeid(T).name() << '\t';
   print(std::tuple<Ts...>{});
 }
@@ -18,7 +22,8 @@ using type_equal = types::conjunction<std::is_same<Tuple, Tuples>...>;
 template <typename L, typename R>
 using size_less = std::integral_constant<bool, sizeof(L) < sizeof(R)>;
 namespace t_sort = types::sort;
-int main(int argc, char const *argv[]) {
+int main(int argc, char const *argv[])
+{
   using A = std::tuple<double, void *, bool, unsigned short, short,
                        unsigned char, char, unsigned int, long, unsigned long,
                        long long, unsigned long long, long double, int, float>;
@@ -47,7 +52,7 @@ int main(int argc, char const *argv[]) {
   static_assert(t_sort::is_sorted<merge, size_less>::value,
                 "iterative_sort failed");
   print(merge{});
-  static_assert(type_equal<count, heap, insert, bubble, group>::value,
+  static_assert(type_equal<count, heap, insert, bubble, group, merge>::value,
                 "iterative_sort failed");
   return 0;
 }

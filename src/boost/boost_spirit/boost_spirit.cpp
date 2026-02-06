@@ -3,9 +3,6 @@
 #include <boost/phoenix/operator.hpp>
 
 #include <iostream>
-#include <string>
-#include <complex>
-#include <iterator>
 namespace aaa
 {
     using namespace boost::spirit;
