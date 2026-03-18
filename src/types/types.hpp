@@ -87,8 +87,7 @@ namespace __impl_transfer {
 using __impl_transfer::transfer;
 // C++11 兼容的 index_sequence
 template <std::size_t... Is>
-struct index_sequence {
-};
+struct index_sequence;
 template <std::size_t N, std::size_t... Is>
 struct make_index_sequence {
     using type = typename make_index_sequence<N - 1, N - 1, Is...>::type;
@@ -137,18 +136,15 @@ using __impl_concat::concat;
 template <template <typename /* T */, std::size_t /* Index */, typename /* Tuple */> class /* type */ Mapper,
     typename Tuple>
 class map {
-    template <std::size_t, typename CurTuple>
-    struct helper {
-        using type = CurTuple;
-    };
-    template <std::size_t Index, typename T, typename... Ts>
-    struct helper<Index, std::tuple<T, Ts...>> {
-        using type = typename concat<std::tuple<typename Mapper<T, Index, Tuple>::type>,
-            typename helper<Index + 1, std::tuple<Ts...>>::type>::type;
+    template <typename, typename>
+    struct helper;
+    template <typename... Ts, std::size_t... Is>
+    struct helper<index_sequence<Is...>, std::tuple<Ts...>> {
+        using type = std::tuple<typename Mapper<Ts, Is, Tuple>::type...>;
     };
 
 public:
-    using type = typename helper<0, Tuple>::type;
+    using type = typename helper<typename make_index_sequence<std::tuple_size<Tuple>::value>::type, Tuple>::type;
 };
 /*
   `type`: 过滤
@@ -225,14 +221,12 @@ using types = __impl_types::__uniqueness<std::tuple<>, Tuple>;
 namespace __impl_n {
     // 交集
     template <typename Tuple1, typename Tuple2>
-    class n;
-    template <typename... Ts1, typename... Ts2>
-    class n<std::tuple<Ts1...>, std::tuple<Ts2...>> {
+    class n {
         template <typename T, std::size_t, typename>
-        using helper = in<T, std::tuple<Ts2...>>;
+        using helper = in<T, Tuple2>;
 
     public:
-        using type = typename types<typename filter_include<helper, std::tuple<Ts1...>>::type>::type;
+        using type = typename types<typename filter_include<helper, Tuple1>::type>::type;
     };
 } // namespace __impl_n
 using __impl_n::n;
@@ -242,10 +236,9 @@ namespace __impl_x {
     class x {
         template <typename T, std::size_t, typename>
         using helper = in<T, Tuple2>;
-        using filtered = typename filter_exclude<helper, Tuple1>::type;
 
     public:
-        using type = typename types<filtered>::type;
+        using type = typename types<typename filter_exclude<helper, Tuple1>::type>::type;
     };
 } // namespace __impl_x
 using __impl_x::x;
