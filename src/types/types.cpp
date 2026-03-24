@@ -1,5 +1,6 @@
 #include "types.hpp"
 #include <iostream>
+#include <utility>
 template <typename L, typename R>
 using size_less = std::integral_constant<bool, sizeof(L) <= sizeof(R)>;
 template <typename L, typename R>
@@ -16,11 +17,14 @@ void print(const std::tuple<T, Ts...>&)
 }
 template <typename T, std::size_t Index, typename Tuple>
 struct AddPoint {
-    using type = T*;
+    using type = std::integral_constant<std::size_t, Index>;
 };
 template <typename T, std::size_t Index, typename Tuple>
 using GreaterIntSize = std::integral_constant<bool, (sizeof(T) > sizeof(int))>;
-
+template <typename... Ts>
+struct df {
+    using type = types::index_sequence<Ts::value...>;
+};
 int main(int argc, char const* argv[])
 {
     using A = std::tuple<double,
@@ -56,7 +60,10 @@ int main(int argc, char const* argv[])
     std::cout << "u:" << typeid(u).name() << std::endl;
     // 测试:映射
     using m = typename types::map<AddPoint, A>::type;
-    std::cout << "map:" << typeid(m).name() << std::endl;
+    using ns = typename types::transfer<df, m>::type::type;
+    using seq = types::make_index_sequence<1000>;
+
+    std::cout << "map:" << typeid(seq).name() << std::endl;
     // 测试:过滤
     using fi = typename types::filter<GreaterIntSize, A>::type;
     std::cout << "filter_include:" << typeid(fi::first_type).name() << std::endl;

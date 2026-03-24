@@ -52,10 +52,12 @@ Mkfile.old
 dkms.conf
 
 # my lost
-.vscode/
-out
+/.vscode
+/out
 .antlr
-venv/
-.venv/
-__pycache__
-.vs
+/venv
+/.venv
+/__pycache__
+/.vs
+/build
+/.cache

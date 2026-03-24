@@ -1,7 +1,9 @@
 #pragma once
 #include <type_traits>
+#include <utility>
 #ifndef TYPES_HPP
 #define TYPES_HPP 1
+#include "compiler_detect.h"
 #include <tuple>
 /*
   说明
@@ -9,6 +11,10 @@
   - `type`: 约定对应的类存在公有类型成员`type`,作为结果
  */
 namespace types {
+#if HAS_CXX17
+using std::conjunction;
+using std::disjunction;
+#else
 namespace __impl_logical {
     namespace _1 {
         template <typename, typename _B1, typename... _Bn>
@@ -71,6 +77,7 @@ namespace __impl_logical {
 } // namespace __impl_logical
 using __impl_logical::conjunction;
 using __impl_logical::disjunction;
+#endif
 namespace __impl_transfer {
     /*
       `type`: 转发模板参数
@@ -85,17 +92,105 @@ namespace __impl_transfer {
     };
 } // namespace __impl_transfer
 using __impl_transfer::transfer;
-// C++11 兼容的 index_sequence
-template <std::size_t... Is>
-struct index_sequence;
-template <std::size_t N, std::size_t... Is>
-struct make_index_sequence {
-    using type = typename make_index_sequence<N - 1, N - 1, Is...>::type;
+#if HAS_CXX14
+using std::integer_sequence;
+using std::index_sequence;
+using std::index_sequence_for;
+using std::make_index_sequence;
+using std::make_integer_sequence;
+#else
+// C++14标准前兼容的编译时的整数序列
+template <typename T, T... Ints>
+struct integer_sequence {
+    using value_type = T;
+    static_assert(std::is_integral<T>::value, "T must be an integral type");
+    static constexpr size_t size() noexcept { return sizeof...(Ints); }
 };
-template <std::size_t... Is>
-struct make_index_sequence<0, Is...> {
-    using type = index_sequence<Is...>;
-};
+namespace __impl_integer_sequence {
+    namespace __1 {
+        template <typename T, T N>
+        class __make_integer_sequence {
+            template <T CurInt, T... Ints>
+            struct helper {
+                using type = typename helper<CurInt - 1, CurInt - 1, Ints...>::type;
+            };
+            template <T... Ints>
+            struct helper<0, Ints...> {
+                using type = integer_sequence<T, Ints...>;
+            };
+
+        public:
+            using type = typename helper<N>::type;
+        };
+    }
+    template <typename, typename>
+    struct __sequence_concat;
+    template <typename T, T... Is1, T... Is2>
+    struct __sequence_concat<integer_sequence<T, Is1...>, integer_sequence<T, Is2...>> {
+        using type = integer_sequence<T, Is1..., (Is2 + sizeof...(Is1))...>;
+    };
+    namespace __2 {
+        template <typename T, T N>
+        class __make_integer_sequence {
+            template <T N1, T N2>
+            struct helper {
+                using type = typename __sequence_concat<typename __make_integer_sequence<T, N1>::type,
+                    typename __make_integer_sequence<T, N2>::type>::type;
+            };
+            template <>
+            struct helper<0, 0> {
+                using type = integer_sequence<T>;
+            };
+            template <>
+            struct helper<0, 1> {
+                using type = integer_sequence<T, 0>;
+            };
+
+        public:
+            using type = typename helper<N / 2, N - N / 2>::type;
+        };
+    }
+    namespace __3 {
+        // 主模板 - 默认不定义，强制使用特化
+        template <typename T, T N, typename Enable = void>
+        struct __make_integer_sequence;
+
+        // 特化：N = 0
+        template <typename T, T N>
+        struct __make_integer_sequence<T, N, typename std::enable_if<N == 0>::type> {
+            using type = integer_sequence<T>;
+        };
+
+        // 特化：N = 1
+        template <typename T, T N>
+        struct __make_integer_sequence<T, N, typename std::enable_if<N == 1>::type> {
+            using type = integer_sequence<T, 0>;
+        };
+
+        // 特化：N >= 2
+        template <typename T, T N>
+        struct __make_integer_sequence<T, N, typename std::enable_if<(N >= 2)>::type> {
+        private:
+            static constexpr T half = N / 2;
+
+            using left = typename __make_integer_sequence<T, half>::type;
+            using right_base = typename __make_integer_sequence<T, N - half>::type;
+
+        public:
+            using type = typename __sequence_concat<left, right_base>::type;
+        };
+    }
+    using __3::__make_integer_sequence;
+}
+template <typename T, T N>
+using make_integer_sequence = typename __impl_integer_sequence::__make_integer_sequence<T, N>::type;
+template <size_t... Ints>
+using index_sequence = integer_sequence<size_t, Ints...>;
+template <size_t N>
+using make_index_sequence = make_integer_sequence<size_t, N>;
+template <typename... Ts>
+using index_sequence_for = make_index_sequence<sizeof...(Ts)>;
+#endif
 } // namespace types
 namespace types {
 template <typename T>
@@ -144,7 +239,7 @@ class map {
     };
 
 public:
-    using type = typename helper<typename make_index_sequence<std::tuple_size<Tuple>::value>::type, Tuple>::type;
+    using type = typename helper<make_index_sequence<std::tuple_size<Tuple>::value>, Tuple>::type;
 };
 /*
   `type`: 过滤
@@ -250,5 +345,6 @@ namespace __impl_u {
     };
 } // namespace __impl_u
 using __impl_u::u;
+
 } // namespace types
 #endif
